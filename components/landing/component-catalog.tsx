@@ -81,7 +81,29 @@ const categories = [
   "utility",
 ]
 
-function CatalogItem({ name }: { name: string }) {
+const categoryColors: Record<string, string> = {
+  input: "text-[var(--color-cobalt)]",
+  action: "text-[var(--color-tanzanite)]",
+  data: "text-[var(--color-malachite)]",
+  feedback: "text-[var(--color-gold)]",
+  layout: "text-[var(--color-terracotta)]",
+  navigation: "text-[var(--color-cobalt)]",
+  overlay: "text-[var(--color-tanzanite)]",
+  utility: "text-muted-foreground",
+}
+
+const categoryDots: Record<string, string> = {
+  input: "bg-[var(--color-cobalt)]",
+  action: "bg-[var(--color-tanzanite)]",
+  data: "bg-[var(--color-malachite)]",
+  feedback: "bg-[var(--color-gold)]",
+  layout: "bg-[var(--color-terracotta)]",
+  navigation: "bg-[var(--color-cobalt)]",
+  overlay: "bg-[var(--color-tanzanite)]",
+  utility: "bg-muted-foreground",
+}
+
+function CatalogItem({ name, category }: { name: string; category: string }) {
   const [copied, setCopied] = useState(false)
   const installCmd = `npx shadcn@latest add https://registry.mukoko.com/api/r/${name}`
 
@@ -92,12 +114,15 @@ function CatalogItem({ name }: { name: string }) {
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       }}
-      className="group flex items-center justify-between rounded-xl border border-border/60 bg-card px-4 py-3 text-left transition-colors hover:border-accent/30 hover:bg-card/80"
+      className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-left transition-all hover:border-primary/20 hover:shadow-[0_2px_12px_rgba(179,136,255,0.05)]"
     >
-      <span className="font-mono text-sm text-foreground">{name}</span>
-      <span className="flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:text-foreground">
+      <div className="flex items-center gap-2.5">
+        <span className={`size-1.5 rounded-full ${categoryDots[category] || "bg-muted-foreground"}`} />
+        <span className="font-mono text-sm text-foreground">{name}</span>
+      </div>
+      <span className="flex size-6 items-center justify-center rounded-lg text-muted-foreground transition-colors group-hover:text-foreground">
         {copied ? (
-          <Check className="size-3.5 text-accent" />
+          <Check className="size-3.5 text-[var(--color-malachite)]" />
         ) : (
           <Copy className="size-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
         )}
@@ -112,7 +137,8 @@ export function ComponentCatalog() {
 
   const filtered = components.filter((c) => {
     const matchesSearch = c.name.includes(search.toLowerCase())
-    const matchesCategory = activeCategory === "all" || c.category === activeCategory
+    const matchesCategory =
+      activeCategory === "all" || c.category === activeCategory
     return matchesSearch && matchesCategory
   })
 
@@ -120,8 +146,8 @@ export function ComponentCatalog() {
     <section id="catalog" className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-5xl">
         <div className="mb-10 text-center">
-          <p className="mb-3 text-sm font-medium text-accent">Full catalog</p>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          <p className="mb-3 text-sm font-medium text-primary">Full Catalog</p>
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             All {components.length} components
           </h2>
           <p className="mt-4 text-muted-foreground">
@@ -144,12 +170,21 @@ export function ComponentCatalog() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium capitalize transition-all ${
                   activeCategory === cat
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
               >
+                {cat !== "all" && (
+                  <span
+                    className={`size-1.5 rounded-full ${
+                      activeCategory === cat
+                        ? "bg-primary-foreground"
+                        : categoryDots[cat] || "bg-muted-foreground"
+                    }`}
+                  />
+                )}
                 {cat}
               </button>
             ))}
@@ -158,19 +193,22 @@ export function ComponentCatalog() {
 
         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filtered.map((c) => (
-            <CatalogItem key={c.name} name={c.name} />
+            <CatalogItem key={c.name} name={c.name} category={c.category} />
           ))}
         </div>
 
         {filtered.length === 0 && (
           <div className="flex flex-col items-center gap-2 py-16 text-center">
-            <p className="text-sm text-muted-foreground">No components match your filter.</p>
+            <p className="text-sm text-muted-foreground">
+              No components match your filter.
+            </p>
           </div>
         )}
 
         <div className="mt-8 flex justify-center">
           <Badge variant="outline" className="gap-1.5 text-muted-foreground">
-            <span className="font-mono">{filtered.length}</span> of {components.length} shown
+            <span className="font-mono">{filtered.length}</span> of{" "}
+            {components.length} shown
           </Badge>
         </div>
       </div>

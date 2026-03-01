@@ -1,23 +1,32 @@
-import { Terminal, FolderOpen, Sparkles } from "lucide-react"
+import { Terminal, FolderOpen, Palette } from "lucide-react"
 
 const steps = [
   {
     icon: Terminal,
-    title: "Run the CLI",
-    description: "Use the shadcn CLI to add any component directly from the mukoko registry.",
+    title: "Install from the registry",
+    description:
+      "Use the shadcn CLI to add any component. Dependencies and tokens resolve automatically.",
     code: "npx shadcn@latest add https://registry.mukoko.com/api/r/button",
+    mineral: "tanzanite",
+    mineralColor: "bg-[var(--color-tanzanite)]",
   },
   {
     icon: FolderOpen,
-    title: "Files land in your project",
-    description: "Components are copied into your codebase. Full ownership, no hidden dependencies.",
+    title: "Own your code",
+    description:
+      "Components land in your project as source files. Full ownership, zero hidden dependencies.",
     code: "components/ui/button.tsx",
+    mineral: "malachite",
+    mineralColor: "bg-[var(--color-malachite)]",
   },
   {
-    icon: Sparkles,
-    title: "Customize and ship",
-    description: "Modify the source to fit your design system. The code is yours.",
-    code: "<Button variant=\"outline\">Ship it</Button>",
+    icon: Palette,
+    title: "Inherit the brand",
+    description:
+      "Five African Minerals built in. Swap tokens to match your product, or ship as-is.",
+    code: '<Button variant="outline">Ship it</Button>',
+    mineral: "gold",
+    mineralColor: "bg-[var(--color-gold)]",
   },
 ]
 
@@ -26,8 +35,8 @@ export function InstallSteps() {
     <section className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-5xl">
         <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-medium text-accent">How it works</p>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          <p className="mb-3 text-sm font-medium text-primary">How it works</p>
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Three steps. Zero friction.
           </h2>
         </div>
@@ -36,23 +45,29 @@ export function InstallSteps() {
           {steps.map((step, i) => (
             <div
               key={step.title}
-              className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-6 transition-colors hover:border-accent/30"
+              className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/20 hover:shadow-[0_4px_20px_rgba(179,136,255,0.06)]"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              {/* Step number with mineral dot */}
+              <div className="flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <step.icon className="size-5" />
                 </div>
-                <span className="font-mono text-xs text-muted-foreground">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`size-2 rounded-full ${step.mineralColor}`} />
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
               </div>
+
               <div className="flex flex-col gap-1.5">
-                <h3 className="text-base font-medium text-foreground">{step.title}</h3>
+                <h3 className="text-base font-semibold text-foreground">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {step.description}
                 </p>
               </div>
-              <div className="mt-auto rounded-lg bg-muted/50 px-3 py-2">
+
+              <div className="mt-auto rounded-xl bg-secondary px-3 py-2.5">
                 <code className="font-mono text-xs text-muted-foreground break-all">
                   {step.code}
                 </code>

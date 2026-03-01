@@ -39,11 +39,11 @@ function PreviewCard({
   const installCmd = `npx shadcn@latest add https://registry.mukoko.com/api/r/${name}`
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-colors hover:border-accent/30">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/20 hover:shadow-[0_4px_20px_rgba(179,136,255,0.06)]">
       <div className="flex min-h-[200px] items-center justify-center p-8">
         {children}
       </div>
-      <div className="flex flex-col gap-2 border-t border-border/60 px-5 py-4">
+      <div className="flex flex-col gap-2 border-t border-border px-5 py-4">
         <div className="flex items-center justify-between">
           <h3 className="font-mono text-sm font-medium text-foreground">{name}</h3>
           <button
@@ -52,10 +52,14 @@ function PreviewCard({
               setCopied(true)
               setTimeout(() => setCopied(false), 2000)
             }}
-            className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             aria-label={`Copy install command for ${name}`}
           >
-            {copied ? <Check className="size-3.5 text-accent" /> : <Copy className="size-3.5" />}
+            {copied ? (
+              <Check className="size-3.5 text-[var(--color-malachite)]" />
+            ) : (
+              <Copy className="size-3.5" />
+            )}
           </button>
         </div>
         <p className="text-xs leading-relaxed text-muted-foreground">{description}</p>
@@ -67,11 +71,10 @@ function PreviewCard({
 function ButtonShowcase() {
   return (
     <div className="flex flex-wrap items-center justify-center gap-3">
-      <Button>Default</Button>
+      <Button>Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
-      <Button variant="destructive">Destructive</Button>
     </div>
   )
 }
@@ -82,7 +85,7 @@ function BadgeShowcase() {
       <Badge>Default</Badge>
       <Badge variant="secondary">Secondary</Badge>
       <Badge variant="outline">Outline</Badge>
-      <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="destructive">Error</Badge>
     </div>
   )
 }
@@ -91,17 +94,19 @@ function CardShowcase() {
   return (
     <Card className="w-full max-w-[280px]" size="sm">
       <CardHeader>
-        <CardTitle>Project Alpha</CardTitle>
-        <CardDescription>Deployment status overview</CardDescription>
+        <CardTitle>Project Shamwari</CardTitle>
+        <CardDescription>AI companion deployment</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Status</span>
-            <Badge variant="outline" className="border-accent/30 text-accent">Active</Badge>
+            <Badge variant="outline" className="border-[var(--color-malachite)]/30 text-[var(--color-malachite)]">
+              Active
+            </Badge>
           </div>
           <Progress value={72} />
-          <span className="text-xs text-muted-foreground">72% complete</span>
+          <span className="text-xs text-muted-foreground">72% deployed</span>
         </div>
       </CardContent>
     </Card>
@@ -112,11 +117,15 @@ function InputShowcase() {
   return (
     <div className="flex w-full max-w-[260px] flex-col gap-3">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email-demo" className="text-sm">Email</Label>
-        <Input id="email-demo" type="email" placeholder="you@example.com" />
+        <Label htmlFor="email-demo" className="text-sm">
+          Email
+        </Label>
+        <Input id="email-demo" type="email" placeholder="you@mukoko.com" />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="search-demo" className="text-sm">Search</Label>
+        <Label htmlFor="search-demo" className="text-sm">
+          Search
+        </Label>
         <Input id="search-demo" type="search" placeholder="Search components..." />
       </div>
     </div>
@@ -128,15 +137,21 @@ function SwitchShowcase() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <Switch id="notifications" defaultChecked />
-        <Label htmlFor="notifications" className="text-sm">Notifications</Label>
+        <Label htmlFor="notifications" className="text-sm">
+          Notifications
+        </Label>
       </div>
       <div className="flex items-center gap-3">
         <Switch id="dark-mode" />
-        <Label htmlFor="dark-mode" className="text-sm">Dark mode</Label>
+        <Label htmlFor="dark-mode" className="text-sm">
+          Dark mode
+        </Label>
       </div>
       <div className="flex items-center gap-3">
         <Checkbox id="agree" defaultChecked />
-        <Label htmlFor="agree" className="text-sm">I agree to the terms</Label>
+        <Label htmlFor="agree" className="text-sm">
+          Accept terms
+        </Label>
       </div>
     </div>
   )
@@ -151,21 +166,21 @@ function TabsShowcase() {
         <TabsTrigger value="settings">Settings</TabsTrigger>
       </TabsList>
       <TabsContent value="overview" className="mt-3">
-        <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-3">
+        <div className="flex flex-col gap-2 rounded-xl bg-secondary p-3">
           <p className="text-sm text-foreground font-medium">Dashboard</p>
-          <p className="text-xs text-muted-foreground">Your project overview and key metrics.</p>
+          <p className="text-xs text-muted-foreground">Project overview and key metrics.</p>
         </div>
       </TabsContent>
       <TabsContent value="analytics" className="mt-3">
-        <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-3">
+        <div className="flex flex-col gap-2 rounded-xl bg-secondary p-3">
           <p className="text-sm text-foreground font-medium">Analytics</p>
-          <p className="text-xs text-muted-foreground">Track performance and user engagement.</p>
+          <p className="text-xs text-muted-foreground">Performance and engagement data.</p>
         </div>
       </TabsContent>
       <TabsContent value="settings" className="mt-3">
-        <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-3">
+        <div className="flex flex-col gap-2 rounded-xl bg-secondary p-3">
           <p className="text-sm text-foreground font-medium">Settings</p>
-          <p className="text-xs text-muted-foreground">Manage your project configuration.</p>
+          <p className="text-xs text-muted-foreground">Project configuration.</p>
         </div>
       </TabsContent>
     </Tabs>
@@ -216,10 +231,10 @@ function SkeletonShowcase() {
           <Skeleton className="h-3 w-1/2" />
         </div>
       </div>
-      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full rounded-xl" />
       <div className="flex gap-2">
-        <Skeleton className="h-8 flex-1" />
-        <Skeleton className="h-8 w-20" />
+        <Skeleton className="h-8 flex-1 rounded-lg" />
+        <Skeleton className="h-8 w-20 rounded-lg" />
       </div>
     </div>
   )
@@ -230,38 +245,62 @@ export function ComponentShowcase() {
     <section id="components" className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-medium text-accent">Components</p>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          <p className="mb-3 text-sm font-medium text-primary">Live Preview</p>
+          <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             See them in action
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Live previews of select components from the registry.
+            Interactive previews of components from the registry. Click the copy icon to grab the install command.
           </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          <PreviewCard name="button" description="Displays a button or a component that looks like a button.">
+          <PreviewCard
+            name="button"
+            description="Versatile button component with multiple variants and sizes."
+          >
             <ButtonShowcase />
           </PreviewCard>
-          <PreviewCard name="badge" description="Displays a badge or a component that looks like a badge.">
+          <PreviewCard
+            name="badge"
+            description="Small status indicators and labels."
+          >
             <BadgeShowcase />
           </PreviewCard>
-          <PreviewCard name="card" description="Displays a card with header, content, and footer.">
+          <PreviewCard
+            name="card"
+            description="Container with header, content, and footer sections."
+          >
             <CardShowcase />
           </PreviewCard>
-          <PreviewCard name="input" description="Displays a form input field.">
+          <PreviewCard
+            name="input"
+            description="Form input fields with label support."
+          >
             <InputShowcase />
           </PreviewCard>
-          <PreviewCard name="switch" description="A control that allows toggling between states.">
+          <PreviewCard
+            name="switch"
+            description="Toggle controls for binary states."
+          >
             <SwitchShowcase />
           </PreviewCard>
-          <PreviewCard name="tabs" description="A set of layered sections of content.">
+          <PreviewCard
+            name="tabs"
+            description="Layered content sections with tab navigation."
+          >
             <TabsShowcase />
           </PreviewCard>
-          <PreviewCard name="avatar" description="An image element with a fallback for representing the user.">
+          <PreviewCard
+            name="avatar"
+            description="User representation with image fallbacks and grouping."
+          >
             <AvatarShowcase />
           </PreviewCard>
-          <PreviewCard name="skeleton" description="Used to show a placeholder while content is loading.">
+          <PreviewCard
+            name="skeleton"
+            description="Loading placeholders that match your content layout."
+          >
             <SkeletonShowcase />
           </PreviewCard>
         </div>

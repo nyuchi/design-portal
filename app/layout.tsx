@@ -1,18 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const fontSans = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const fontSans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const fontMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   title: "mukoko -- Component Registry",
   description:
-    "A curated collection of production-ready UI components. Install directly into your project with the shadcn CLI.",
+    "A curated collection of production-ready UI components built on the Nyuchi Brand System. Install directly into your project with the shadcn CLI.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#0A0A0A",
 };
 
 export default function RootLayout({
