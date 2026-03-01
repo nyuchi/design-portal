@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Github, ExternalLink, Menu, X } from "lucide-react"
 import { MukokoLogo } from "@/components/brand/mukoko-logo"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const products = [
   { label: "mukoko.com", href: "https://www.mukoko.com" },
@@ -47,7 +48,8 @@ export function Header() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
           <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
             <a
               href="https://github.com/nyuchitech/mukoko-registry"
