@@ -81,17 +81,7 @@ const categories = [
   "utility",
 ]
 
-const categoryColors: Record<string, string> = {
-  input: "text-[var(--color-cobalt)]",
-  action: "text-[var(--color-tanzanite)]",
-  data: "text-[var(--color-malachite)]",
-  feedback: "text-[var(--color-gold)]",
-  layout: "text-[var(--color-terracotta)]",
-  navigation: "text-[var(--color-cobalt)]",
-  overlay: "text-[var(--color-tanzanite)]",
-  utility: "text-muted-foreground",
-}
-
+/* Mineral accent dots for each category -- the only place color appears */
 const categoryDots: Record<string, string> = {
   input: "bg-[var(--color-cobalt)]",
   action: "bg-[var(--color-tanzanite)]",
@@ -114,7 +104,7 @@ function CatalogItem({ name, category }: { name: string; category: string }) {
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       }}
-      className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-left transition-all hover:border-primary/20 hover:shadow-[0_2px_12px_rgba(179,136,255,0.05)]"
+      className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-left transition-all hover:border-foreground/12"
     >
       <div className="flex items-center gap-2.5">
         <span className={`size-1.5 rounded-full ${categoryDots[category] || "bg-muted-foreground"}`} />
@@ -146,7 +136,9 @@ export function ComponentCatalog() {
     <section id="catalog" className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-5xl">
         <div className="mb-10 text-center">
-          <p className="mb-3 text-sm font-medium text-primary">Full Catalog</p>
+          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+            Full Catalog
+          </p>
           <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             All {components.length} components
           </h2>
@@ -156,7 +148,7 @@ export function ComponentCatalog() {
         </div>
 
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="relative max-w-xs w-full">
+          <div className="relative w-full max-w-xs">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Filter components..."
@@ -172,7 +164,7 @@ export function ComponentCatalog() {
                 onClick={() => setActiveCategory(cat)}
                 className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium capitalize transition-all ${
                   activeCategory === cat
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-foreground text-background"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
               >
@@ -180,7 +172,7 @@ export function ComponentCatalog() {
                   <span
                     className={`size-1.5 rounded-full ${
                       activeCategory === cat
-                        ? "bg-primary-foreground"
+                        ? "bg-background"
                         : categoryDots[cat] || "bg-muted-foreground"
                     }`}
                   />

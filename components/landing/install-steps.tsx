@@ -7,7 +7,6 @@ const steps = [
     description:
       "Use the shadcn CLI to add any component. Dependencies and tokens resolve automatically.",
     code: "npx shadcn@latest add https://registry.mukoko.com/api/r/button",
-    mineral: "tanzanite",
     mineralColor: "bg-[var(--color-tanzanite)]",
   },
   {
@@ -16,7 +15,6 @@ const steps = [
     description:
       "Components land in your project as source files. Full ownership, zero hidden dependencies.",
     code: "components/ui/button.tsx",
-    mineral: "malachite",
     mineralColor: "bg-[var(--color-malachite)]",
   },
   {
@@ -25,7 +23,6 @@ const steps = [
     description:
       "Five African Minerals built in. Swap tokens to match your product, or ship as-is.",
     code: '<Button variant="outline">Ship it</Button>',
-    mineral: "gold",
     mineralColor: "bg-[var(--color-gold)]",
   },
 ]
@@ -35,7 +32,9 @@ export function InstallSteps() {
     <section className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-5xl">
         <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-medium text-primary">How it works</p>
+          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+            How it works
+          </p>
           <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Three steps. Zero friction.
           </h2>
@@ -45,11 +44,10 @@ export function InstallSteps() {
           {steps.map((step, i) => (
             <div
               key={step.title}
-              className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/20 hover:shadow-[0_4px_20px_rgba(179,136,255,0.06)]"
+              className="group relative flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 transition-all hover:border-foreground/12"
             >
-              {/* Step number with mineral dot */}
               <div className="flex items-center justify-between">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-secondary text-foreground">
                   <step.icon className="size-5" />
                 </div>
                 <div className="flex items-center gap-2">
@@ -68,7 +66,7 @@ export function InstallSteps() {
               </div>
 
               <div className="mt-auto rounded-xl bg-secondary px-3 py-2.5">
-                <code className="font-mono text-xs text-muted-foreground break-all">
+                <code className="break-all font-mono text-xs text-muted-foreground">
                   {step.code}
                 </code>
               </div>

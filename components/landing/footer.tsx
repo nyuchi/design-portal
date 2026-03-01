@@ -18,8 +18,8 @@ export function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="flex size-6 items-center justify-center rounded-lg bg-primary">
-                <span className="text-xs font-bold text-primary-foreground">m</span>
+              <div className="flex size-6 items-center justify-center rounded-lg bg-foreground">
+                <span className="text-xs font-bold text-background">m</span>
               </div>
               <span className="text-sm font-semibold text-foreground">mukoko</span>
             </div>
@@ -98,7 +98,7 @@ export function Footer() {
               href="https://assets.nyuchi.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground transition-colors hover:text-primary"
+              className="underline underline-offset-2 text-foreground transition-colors hover:text-muted-foreground"
             >
               Nyuchi
             </a>

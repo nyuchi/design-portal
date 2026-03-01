@@ -24,9 +24,9 @@ function CopyCommand() {
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       }}
-      className="group flex w-full max-w-2xl items-center gap-3 rounded-2xl border border-border bg-card px-5 py-3.5 text-left transition-all hover:border-primary/30 hover:shadow-[0_4px_20px_rgba(179,136,255,0.08)]"
+      className="group flex w-full max-w-2xl items-center gap-3 rounded-2xl border border-border bg-card px-5 py-3.5 text-left transition-all hover:border-foreground/15"
     >
-      <span className="text-primary font-mono text-sm">$</span>
+      <span className="font-mono text-sm text-muted-foreground">$</span>
       <code className="flex-1 truncate font-mono text-sm text-muted-foreground">
         {command}
       </code>
@@ -40,17 +40,17 @@ function CopyCommand() {
 export function Hero() {
   return (
     <section className="relative flex flex-col items-center gap-10 px-6 pt-32 pb-20 text-center md:pt-44 md:pb-32">
-      {/* Subtle grid background */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(179,136,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(179,136,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
+      {/* Subtle grid */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
       <div className="flex flex-col items-center gap-4">
-        <Badge variant="outline" className="gap-2 border-primary/20 text-primary px-3 py-1">
+        <Badge variant="outline" className="gap-2 px-3 py-1">
           <span className="flex gap-1">
             {minerals.map((m) => (
               <span key={m.name} className={`size-1.5 rounded-full ${m.color}`} />
             ))}
           </span>
-          Nyuchi Brand System
+          <span className="text-muted-foreground">Nyuchi Brand System</span>
         </Badge>
 
         <div className="flex items-center gap-2">
@@ -60,7 +60,7 @@ export function Hero() {
               href={`https://${site}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-border px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
+              className="rounded-full border border-border px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground transition-colors hover:text-foreground"
             >
               {site}
             </a>
@@ -72,7 +72,7 @@ export function Hero() {
         <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground md:text-6xl lg:text-7xl">
           The building blocks
           <br />
-          <span className="text-primary">of mukoko</span>
+          of mukoko
         </h1>
         <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
           Production-ready UI components rooted in the Five African Minerals
@@ -81,7 +81,7 @@ export function Hero() {
         </p>
       </div>
 
-      <div className="flex flex-col items-center gap-5 w-full">
+      <div className="flex w-full flex-col items-center gap-5">
         <CopyCommand />
         <div className="flex items-center gap-3">
           <Button size="lg" className="gap-2 rounded-xl" asChild>
@@ -102,15 +102,15 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Mineral stat bar */}
-      <div className="flex flex-wrap items-center justify-center gap-6 pt-4">
+      {/* Stats */}
+      <div className="flex flex-wrap items-center justify-center gap-8 pt-4">
         {[
           { label: "Components", value: "59" },
           { label: "WCAG AAA", value: "7:1+" },
           { label: "Palette", value: "5 minerals" },
         ].map((stat) => (
           <div key={stat.label} className="flex flex-col items-center gap-0.5">
-            <span className="text-lg font-semibold text-foreground font-mono">{stat.value}</span>
+            <span className="font-mono text-lg font-semibold text-foreground">{stat.value}</span>
             <span className="text-xs text-muted-foreground">{stat.label}</span>
           </div>
         ))}

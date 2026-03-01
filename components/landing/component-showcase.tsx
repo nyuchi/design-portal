@@ -39,7 +39,7 @@ function PreviewCard({
   const installCmd = `npx shadcn@latest add https://registry.mukoko.com/api/r/${name}`
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-primary/20 hover:shadow-[0_4px_20px_rgba(179,136,255,0.06)]">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-foreground/12">
       <div className="flex min-h-[200px] items-center justify-center p-8">
         {children}
       </div>
@@ -167,19 +167,19 @@ function TabsShowcase() {
       </TabsList>
       <TabsContent value="overview" className="mt-3">
         <div className="flex flex-col gap-2 rounded-xl bg-secondary p-3">
-          <p className="text-sm text-foreground font-medium">Dashboard</p>
+          <p className="text-sm font-medium text-foreground">Dashboard</p>
           <p className="text-xs text-muted-foreground">Project overview and key metrics.</p>
         </div>
       </TabsContent>
       <TabsContent value="analytics" className="mt-3">
         <div className="flex flex-col gap-2 rounded-xl bg-secondary p-3">
-          <p className="text-sm text-foreground font-medium">Analytics</p>
+          <p className="text-sm font-medium text-foreground">Analytics</p>
           <p className="text-xs text-muted-foreground">Performance and engagement data.</p>
         </div>
       </TabsContent>
       <TabsContent value="settings" className="mt-3">
         <div className="flex flex-col gap-2 rounded-xl bg-secondary p-3">
-          <p className="text-sm text-foreground font-medium">Settings</p>
+          <p className="text-sm font-medium text-foreground">Settings</p>
           <p className="text-xs text-muted-foreground">Project configuration.</p>
         </div>
       </TabsContent>
@@ -245,7 +245,9 @@ export function ComponentShowcase() {
     <section id="components" className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-medium text-primary">Live Preview</p>
+          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+            Live Preview
+          </p>
           <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             See them in action
           </h2>
