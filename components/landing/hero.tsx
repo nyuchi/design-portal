@@ -13,6 +13,16 @@ const minerals = [
   { name: "terracotta", color: "bg-[var(--color-terracotta)]" },
 ]
 
+const products = [
+  { label: "mukoko.com", href: "https://www.mukoko.com" },
+  { label: "lingo", href: "https://lingo.mukoko.com" },
+  { label: "nhimbe", href: "https://nhimbe.com" },
+  { label: "bushtrade", href: "https://bushtrade.co.zw" },
+  { label: "bundu", href: "https://bundu.family" },
+  { label: "news", href: "https://news.mukoko.com" },
+  { label: "weather", href: "https://weather.mukoko.com" },
+]
+
 function CopyCommand() {
   const [copied, setCopied] = useState(false)
   const command = "npx shadcn@latest add https://registry.mukoko.com/api/r/button"
@@ -50,19 +60,19 @@ export function Hero() {
               <span key={m.name} className={`size-1.5 rounded-full ${m.color}`} />
             ))}
           </span>
-          <span className="text-muted-foreground">Nyuchi Brand System</span>
+          <span className="text-muted-foreground">Five African Minerals</span>
         </Badge>
 
-        <div className="flex items-center gap-2">
-          {["news.mukoko.com", "weather.mukoko.com"].map((site) => (
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
+          {products.map((p) => (
             <a
-              key={site}
-              href={`https://${site}`}
+              key={p.label}
+              href={p.href}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full border border-border px-2.5 py-0.5 text-[11px] font-mono text-muted-foreground transition-colors hover:text-foreground"
             >
-              {site}
+              {p.label}
             </a>
           ))}
         </div>
@@ -91,12 +101,8 @@ export function Hero() {
             </a>
           </Button>
           <Button variant="outline" size="lg" className="w-full rounded-xl sm:w-auto" asChild>
-            <a
-              href="https://assets.nyuchi.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Brand System
+            <a href="#catalog">
+              Full catalog
             </a>
           </Button>
         </div>
@@ -106,7 +112,7 @@ export function Hero() {
       <div className="flex flex-wrap items-center justify-center gap-6 pt-4 sm:gap-8">
         {[
           { label: "Components", value: "59" },
-          { label: "WCAG AAA", value: "7:1+" },
+          { label: "Products", value: "7" },
           { label: "Palette", value: "5 minerals" },
         ].map((stat) => (
           <div key={stat.label} className="flex flex-col items-center gap-0.5">

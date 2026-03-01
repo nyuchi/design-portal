@@ -24,7 +24,7 @@ export function Footer() {
               <span className="text-sm font-semibold text-foreground">mukoko</span>
             </div>
             <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
-              Part of the bundu family. Built on Ubuntu philosophy and the Five African Minerals palette.
+              The design system and component registry for the mukoko product family. Built on the Five African Minerals palette.
             </p>
             <div className="flex items-center gap-1.5 pt-1">
               {minerals.map((m) => (
@@ -34,9 +34,53 @@ export function Footer() {
           </div>
 
           {/* Links */}
-          <div className="flex gap-8 sm:gap-12">
+          <div className="flex flex-wrap gap-8 sm:gap-12">
             <div className="flex flex-col gap-2">
-              <span className="text-xs font-medium text-foreground">Ecosystem</span>
+              <span className="text-xs font-medium text-foreground">Products</span>
+              <a
+                href="https://www.mukoko.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                mukoko.com
+              </a>
+              <a
+                href="https://lingo.mukoko.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Lingo
+              </a>
+              <a
+                href="https://nhimbe.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Nhimbe
+              </a>
+              <a
+                href="https://bushtrade.co.zw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Bushtrade
+              </a>
+              <a
+                href="https://bundu.family"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Bundu
+              </a>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-medium text-foreground">Services</span>
               <a
                 href="https://news.mukoko.com"
                 target="_blank"
@@ -52,14 +96,6 @@ export function Footer() {
                 className="text-xs text-muted-foreground transition-colors hover:text-foreground"
               >
                 Weather
-              </a>
-              <a
-                href="https://assets.nyuchi.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Brand System
               </a>
             </div>
 
@@ -95,7 +131,7 @@ export function Footer() {
           <span className="text-xs text-muted-foreground">
             Built by{" "}
             <a
-              href="https://assets.nyuchi.com"
+              href="https://github.com/nyuchitech"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-2 text-foreground transition-colors hover:text-muted-foreground"

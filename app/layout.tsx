@@ -8,7 +8,7 @@ const fontMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 export const metadata: Metadata = {
   title: "mukoko -- Component Registry",
   description:
-    "A curated collection of production-ready UI components built on the Nyuchi Brand System. Install directly into your project with the shadcn CLI.",
+    "A curated collection of production-ready UI components built on the Five African Minerals design system. Install directly into your project with the shadcn CLI.",
 };
 
 export const viewport: Viewport = {

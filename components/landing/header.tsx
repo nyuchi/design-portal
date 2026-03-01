@@ -4,6 +4,16 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Github, ExternalLink, Menu, X } from "lucide-react"
 
+const products = [
+  { label: "mukoko.com", href: "https://www.mukoko.com" },
+  { label: "lingo", href: "https://lingo.mukoko.com" },
+  { label: "nhimbe", href: "https://nhimbe.com" },
+  { label: "bushtrade", href: "https://bushtrade.co.zw" },
+  { label: "bundu", href: "https://bundu.family" },
+  { label: "news", href: "https://news.mukoko.com" },
+  { label: "weather", href: "https://weather.mukoko.com" },
+]
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -33,15 +43,6 @@ export function Header() {
             Catalog
           </a>
           <a
-            href="https://assets.nyuchi.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            Brand
-            <ExternalLink className="size-3" />
-          </a>
-          <a
             href="/api/r"
             className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
@@ -59,16 +60,6 @@ export function Header() {
             >
               <Github className="size-4" />
               <span className="text-sm">GitHub</span>
-            </a>
-          </Button>
-          <Button variant="ghost" size="icon" asChild className="hidden sm:inline-flex md:hidden">
-            <a
-              href="https://github.com/nyuchitech/mukoko-registry"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub repository"
-            >
-              <Github className="size-4" />
             </a>
           </Button>
           {/* Mobile menu toggle */}
@@ -102,21 +93,31 @@ export function Header() {
             Catalog
           </a>
           <a
-            href="https://assets.nyuchi.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            Brand
-            <ExternalLink className="size-3" />
-          </a>
-          <a
             href="/api/r"
             onClick={() => setMobileOpen(false)}
             className="rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             API
           </a>
+
+          <div className="my-1 h-px bg-border" />
+          <span className="px-3 py-1.5 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+            Products
+          </span>
+          {products.map((p) => (
+            <a
+              key={p.label}
+              href={p.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              {p.label}
+              <ExternalLink className="size-3 opacity-50" />
+            </a>
+          ))}
+
+          <div className="my-1 h-px bg-border" />
           <a
             href="https://github.com/nyuchitech/mukoko-registry"
             target="_blank"
