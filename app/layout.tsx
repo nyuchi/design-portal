@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans, JetBrains_Mono } from "next/font/google";
+import { Noto_Sans, Noto_Serif, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const fontSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const fontSerif = Noto_Serif({ subsets: ["latin"], variable: "--font-serif" });
 const fontMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"

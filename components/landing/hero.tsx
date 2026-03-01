@@ -79,7 +79,7 @@ export function Hero() {
       </div>
 
       <div className="flex max-w-3xl flex-col items-center gap-4 sm:gap-6">
-        <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-6xl lg:text-7xl">
+        <h1 className="font-serif text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-6xl lg:text-7xl">
           The building blocks
           <br />
           of mukoko

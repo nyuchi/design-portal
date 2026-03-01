@@ -35,7 +35,7 @@ export function InstallSteps() {
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
             How it works
           </p>
-          <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          <h2 className="font-serif text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Three steps. Zero friction.
           </h2>
         </div>

@@ -239,7 +239,7 @@ export function ComponentShowcase() {
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
             Live Preview
           </p>
-          <h2 className="text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+          <h2 className="font-serif text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
             See them in action
           </h2>
           <p className="mt-3 text-sm text-muted-foreground sm:mt-4 sm:text-base">
