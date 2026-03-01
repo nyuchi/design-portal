@@ -1,4 +1,5 @@
 import { Separator } from "@/components/ui/separator"
+import { MukokoLogo } from "@/components/brand/mukoko-logo"
 
 const minerals = [
   { name: "cobalt", color: "bg-[var(--color-cobalt)]" },
@@ -17,12 +18,7 @@ export function Footer() {
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           {/* Brand */}
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex size-6 items-center justify-center rounded-lg bg-foreground">
-                <span className="text-xs font-bold text-background">m</span>
-              </div>
-              <span className="text-sm font-semibold text-foreground">mukoko</span>
-            </div>
+            <MukokoLogo size={24} showWordmark={true} />
             <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
               The design system and component registry for the mukoko product family. Built on the Five African Minerals palette.
             </p>

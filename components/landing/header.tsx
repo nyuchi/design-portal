@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Github, ExternalLink, Menu, X } from "lucide-react"
+import { MukokoLogo } from "@/components/brand/mukoko-logo"
 
 const products = [
   { label: "mukoko.com", href: "https://www.mukoko.com" },
@@ -20,12 +21,8 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <a href="/" className="flex items-center gap-2.5">
-          <div className="flex size-7 items-center justify-center rounded-lg bg-foreground">
-            <span className="text-sm font-bold text-background">m</span>
-          </div>
-          <span className="text-sm font-semibold text-foreground tracking-tight">mukoko</span>
-          <span className="hidden text-xs text-muted-foreground sm:inline">registry</span>
+        <a href="/" className="flex items-center">
+          <MukokoLogo size={26} suffix="registry" />
         </a>
 
         {/* Desktop nav */}
