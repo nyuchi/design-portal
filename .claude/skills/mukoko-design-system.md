@@ -1,7 +1,7 @@
 # Mukoko Design System Skill
 
 ## Description
-Reference and scaffold components for the Mukoko design system — the Five African Minerals palette, 70+ production-ready React UI components, and brand guidelines for the Mukoko ecosystem.
+Reference and scaffold components for the Mukoko design system — the Five African Minerals palette, 94 registry items (82 UI components, 3 hooks, 9 lib), and brand guidelines for the Mukoko ecosystem.
 
 ## Trigger
 When the user asks about Mukoko design tokens, component patterns, brand colors, typography, or wants to create/scaffold a new component for any Mukoko app.
