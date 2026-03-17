@@ -1,7 +1,7 @@
 # Mukoko Design System Skill
 
 ## Description
-Reference and scaffold components for the Mukoko design system — the Five African Minerals palette, 70+ production-ready React UI components, and brand guidelines for the Mukoko ecosystem.
+Reference and scaffold components for the Mukoko design system — the Five African Minerals palette, 94 registry items (82 UI components, 3 hooks, 9 lib), and brand guidelines for the Mukoko ecosystem.
 
 ## Trigger
 When the user asks about Mukoko design tokens, component patterns, brand colors, typography, or wants to create/scaffold a new component for any Mukoko app.
@@ -91,7 +91,7 @@ When the user wants to create a new component:
 1. **Create the file** at `components/ui/<name>.tsx` following the CVA + Radix + cn() pattern
 2. **Add to registry.json** with name, type, description, dependencies, and files
 3. **Run** `pnpm registry:build` to regenerate static files
-4. **Verify** via `curl http://localhost:3000/api/r/<name>`
+4. **Verify** via `curl http://localhost:3000/api/v1/ui/<name>`
 
 ### Key Rules
 - NEVER use hardcoded hex colors — always use Tailwind classes backed by CSS custom properties
@@ -104,7 +104,7 @@ When the user wants to create a new component:
 
 ### Install Command
 ```bash
-npx shadcn@latest add https://registry.mukoko.com/api/r/<component-name>
+npx shadcn@latest add https://registry.mukoko.com/api/v1/ui/<component-name>
 ```
 
 ### Ecosystem Brands
