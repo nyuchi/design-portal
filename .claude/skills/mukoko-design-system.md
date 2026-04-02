@@ -153,7 +153,7 @@ The Nyuchi Design Portal has these sections:
 
 ### Install Command
 ```bash
-npx shadcn@latest add https://registry.mukoko.com/api/v1/ui/<component-name>
+npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/<component-name>
 ```
 
 ### Ecosystem Brands
@@ -171,9 +171,9 @@ Served at `/mcp` via Streamable HTTP. Configured in `.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "mukoko-registry": {
+    "design-portal": {
       "type": "url",
-      "url": "https://registry.mukoko.com/mcp"
+      "url": "https://design.nyuchi.com/mcp"
     }
   }
 }

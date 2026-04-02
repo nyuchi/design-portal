@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "mukoko-registry": {
+    "nyuchi-design-portal": {
       "type": "url",
-      "url": "https://registry.mukoko.com/mcp"
+      "url": "https://design.nyuchi.com/mcp"
     }
   }
 }
