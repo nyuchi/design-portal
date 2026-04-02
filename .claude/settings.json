@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "mukoko-registry": {
-      "command": "npx",
-      "args": ["--prefix", "mcp", "tsx", "mcp/src/index.ts"]
+      "type": "url",
+      "url": "https://registry.mukoko.com/mcp"
     }
   }
 }
