@@ -121,7 +121,7 @@ export async function getComponent(
 
   if (error) {
     if (error.code === "PGRST116") return null // not found
-    throw error
+    throw new Error(error.message)
   }
   return data as unknown as ComponentRow
 }
@@ -135,7 +135,7 @@ export async function getAllComponents(): Promise<ComponentRow[]> {
     .select("*")
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ComponentRow[]
 }
 
@@ -151,7 +151,7 @@ export async function getComponentsByCategory(
     .eq("category", category)
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ComponentRow[]
 }
 
@@ -167,7 +167,7 @@ export async function getComponentsByLayer(
     .eq("layer", layer)
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ComponentRow[]
 }
 
@@ -183,7 +183,7 @@ export async function searchComponents(
     .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ComponentRow[]
 }
 
@@ -203,7 +203,7 @@ export async function getComponentDoc(
 
   if (error) {
     if (error.code === "PGRST116") return null
-    throw error
+    throw new Error(error.message)
   }
   return data as unknown as ComponentDocRow
 }
@@ -216,7 +216,7 @@ export async function getAllComponentDocs(): Promise<ComponentDocRow[]> {
     .from("component_docs")
     .select("*")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ComponentDocRow[]
 }
 
@@ -244,7 +244,7 @@ export async function getDemoNames(): Promise<string[]> {
     .select("component_name")
     .eq("has_demo", true)
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return ((data ?? []) as unknown as Array<{ component_name: string }>).map(
     (d) => d.component_name
   )
@@ -316,7 +316,7 @@ export async function upsertComponent(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ComponentRow
 }
 
@@ -333,7 +333,7 @@ export async function upsertComponentDoc(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ComponentDocRow
 }
 
@@ -350,7 +350,7 @@ export async function upsertComponentDemo(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ComponentDemoRow
 }
 
@@ -363,7 +363,7 @@ export async function deleteComponent(name: string): Promise<void> {
     .delete()
     .eq("name", name)
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
 }
 
 // ── Database info ───────────────────────────────────────────────────
@@ -425,7 +425,7 @@ export async function getMinerals(): Promise<BrandMineralRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandMineralRow[]
 }
 
@@ -438,7 +438,7 @@ export async function getSemanticColors(): Promise<BrandSemanticColorRow[]> {
     .select("*")
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandSemanticColorRow[]
 }
 
@@ -454,7 +454,7 @@ export async function getSemanticColorsByType(
     .eq("color_type", colorType)
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandSemanticColorRow[]
 }
 
@@ -467,7 +467,7 @@ export async function getTypography(): Promise<BrandTypographyRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandTypographyRow[]
 }
 
@@ -483,7 +483,7 @@ export async function getTypographyByType(
     .eq("entry_type", entryType)
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandTypographyRow[]
 }
 
@@ -496,7 +496,7 @@ export async function getSpacing(): Promise<BrandSpacingRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandSpacingRow[]
 }
 
@@ -509,7 +509,7 @@ export async function getEcosystemBrands(): Promise<BrandEcosystemRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as BrandEcosystemRow[]
 }
 
@@ -525,7 +525,7 @@ export async function getBrandMeta(): Promise<BrandMetaRow | null> {
 
   if (error) {
     if (error.code === "PGRST116") return null
-    throw error
+    throw new Error(error.message)
   }
   return data as unknown as BrandMetaRow
 }
@@ -573,7 +573,7 @@ export async function getArchitecturePrinciples(): Promise<ArchitecturePrinciple
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitecturePrincipleRow[]
 }
 
@@ -589,7 +589,7 @@ export async function getFrameworkDecision(): Promise<ArchitectureFrameworkRow |
 
   if (error) {
     if (error.code === "PGRST116") return null
-    throw error
+    throw new Error(error.message)
   }
   return data as unknown as ArchitectureFrameworkRow
 }
@@ -603,7 +603,7 @@ export async function getLocalDataLayer(): Promise<ArchitectureDataLayerRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitectureDataLayerRow[]
 }
 
@@ -616,7 +616,7 @@ export async function getCloudLayer(): Promise<ArchitectureCloudLayerRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitectureCloudLayerRow[]
 }
 
@@ -629,7 +629,7 @@ export async function getPipeline(): Promise<ArchitecturePipelineRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitecturePipelineRow[]
 }
 
@@ -642,7 +642,7 @@ export async function getDataOwnership(): Promise<ArchitectureDataOwnershipRow[]
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitectureDataOwnershipRow[]
 }
 
@@ -655,7 +655,7 @@ export async function getSovereignty(): Promise<ArchitectureSovereigntyRow[]> {
     .select("*")
     .order("sort_order")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitectureSovereigntyRow[]
 }
 
@@ -668,7 +668,7 @@ export async function getRemovedTechnologies(): Promise<ArchitectureRemovedRow[]
     .select("*")
     .order("name")
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return (data ?? []) as unknown as ArchitectureRemovedRow[]
 }
 
@@ -687,7 +687,7 @@ export async function upsertBrandMineral(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as BrandMineralRow
 }
 
@@ -704,7 +704,7 @@ export async function upsertBrandSemanticColor(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as BrandSemanticColorRow
 }
 
@@ -721,7 +721,7 @@ export async function upsertBrandTypography(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as BrandTypographyRow
 }
 
@@ -738,7 +738,7 @@ export async function upsertBrandSpacing(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as BrandSpacingRow
 }
 
@@ -755,7 +755,7 @@ export async function upsertBrandEcosystem(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as BrandEcosystemRow
 }
 
@@ -777,7 +777,7 @@ export async function upsertBrandMeta(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as BrandMetaRow
 }
 
@@ -796,7 +796,7 @@ export async function upsertArchitecturePrinciple(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitecturePrincipleRow
 }
 
@@ -813,7 +813,7 @@ export async function upsertArchitectureFramework(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitectureFrameworkRow
 }
 
@@ -830,7 +830,7 @@ export async function upsertArchitectureDataLayer(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitectureDataLayerRow
 }
 
@@ -847,7 +847,7 @@ export async function upsertArchitectureCloudLayer(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitectureCloudLayerRow
 }
 
@@ -864,7 +864,7 @@ export async function upsertArchitecturePipeline(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitecturePipelineRow
 }
 
@@ -881,7 +881,7 @@ export async function upsertArchitectureDataOwnership(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitectureDataOwnershipRow
 }
 
@@ -898,7 +898,7 @@ export async function upsertArchitectureSovereignty(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitectureSovereigntyRow
 }
 
@@ -915,6 +915,6 @@ export async function upsertArchitectureRemoved(
     .select()
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(error.message)
   return data as ArchitectureRemovedRow
 }

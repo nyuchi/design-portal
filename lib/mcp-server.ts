@@ -138,6 +138,11 @@ export function createMukokoMcpServer(): McpServer {
 
   // ─── Tools ───────────────────────────────────────────────────────────
 
+  function toolError(context: string, err: unknown) {
+    const message = err instanceof Error ? err.message : JSON.stringify(err)
+    return { content: [{ type: "text" as const, text: `${context}: ${message}` }], isError: true as const }
+  }
+
   server.tool(
     "get_architecture_info",
     "Get Mukoko ecosystem architecture information: principles, data layer, pipeline, or sovereignty details.",
@@ -145,30 +150,34 @@ export function createMukokoMcpServer(): McpServer {
       category: z.enum(["principles", "framework", "local-data-layer", "cloud-layer", "open-data-pipeline", "data-ownership", "sovereignty", "removed", "all"]).describe("Architecture category to retrieve"),
     },
     async ({ category }) => {
-      const fetchMap: Record<string, () => Promise<unknown>> = {
-        "principles": () => getArchitecturePrinciples(),
-        "framework": () => getFrameworkDecision(),
-        "local-data-layer": () => getLocalDataLayer(),
-        "cloud-layer": () => getCloudLayer(),
-        "open-data-pipeline": () => getPipeline(),
-        "data-ownership": () => getDataOwnership(),
-        "sovereignty": () => getSovereignty(),
-        "removed": () => getRemovedTechnologies(),
-      }
+      try {
+        const fetchMap: Record<string, () => Promise<unknown>> = {
+          "principles": () => getArchitecturePrinciples(),
+          "framework": () => getFrameworkDecision(),
+          "local-data-layer": () => getLocalDataLayer(),
+          "cloud-layer": () => getCloudLayer(),
+          "open-data-pipeline": () => getPipeline(),
+          "data-ownership": () => getDataOwnership(),
+          "sovereignty": () => getSovereignty(),
+          "removed": () => getRemovedTechnologies(),
+        }
 
-      if (category === "all") {
-        const results = await Promise.all(
-          Object.entries(fetchMap).map(async ([key, fn]) => [key, await fn()])
-        )
-        const data = Object.fromEntries(results)
+        if (category === "all") {
+          const results = await Promise.all(
+            Object.entries(fetchMap).map(async ([key, fn]) => [key, await fn()])
+          )
+          const data = Object.fromEntries(results)
+          return {
+            content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+          }
+        }
+
+        const data = await fetchMap[category]()
         return {
           content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
         }
-      }
-
-      const data = await fetchMap[category]()
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+      } catch (err) {
+        return toolError("Failed to fetch architecture data", err)
       }
     }
   )
@@ -180,21 +189,25 @@ export function createMukokoMcpServer(): McpServer {
       type: z.enum(["all", "registry:ui", "registry:hook", "registry:lib"]).default("all").describe("Filter by component type"),
     },
     async ({ type }) => {
-      const components = await getAllComponents()
-      const items = type === "all"
-        ? components
-        : components.filter(c => c.registry_type === type)
+      try {
+        const components = await getAllComponents()
+        const items = type === "all"
+          ? components
+          : components.filter(c => c.registry_type === type)
 
-      const summary = items.map(c => ({
-        name: c.name,
-        type: c.registry_type,
-        description: c.description,
-        dependencies: c.dependencies,
-        registryDependencies: c.registry_dependencies,
-      }))
+        const summary = items.map(c => ({
+          name: c.name,
+          type: c.registry_type,
+          description: c.description,
+          dependencies: c.dependencies,
+          registryDependencies: c.registry_dependencies,
+        }))
 
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(summary, null, 2) }],
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(summary, null, 2) }],
+        }
+      } catch (err) {
+        return toolError("Failed to list components", err)
       }
     }
   )
@@ -206,31 +219,35 @@ export function createMukokoMcpServer(): McpServer {
       name: z.string().describe("Component name (e.g., 'button', 'card', 'use-toast')"),
     },
     async ({ name }) => {
-      const component = await getComponent(name)
+      try {
+        const component = await getComponent(name)
 
-      if (!component) {
-        const all = await getAllComponents()
-        const available = all.map(c => c.name).join(", ")
-        return {
-          content: [{ type: "text" as const, text: `Component "${name}" not found. Available: ${available}` }],
-          isError: true,
+        if (!component) {
+          const all = await getAllComponents()
+          const available = all.map(c => c.name).join(", ")
+          return {
+            content: [{ type: "text" as const, text: `Component "${name}" not found. Available: ${available}` }],
+            isError: true,
+          }
         }
-      }
 
-      return {
-        content: [{
-          type: "text" as const,
-          text: JSON.stringify({
-            name: component.name,
-            type: component.registry_type,
-            description: component.description,
-            dependencies: component.dependencies,
-            registryDependencies: component.registry_dependencies,
-            files: component.files,
-            sourceCode: component.source_code,
-            installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${component.name}`,
-          }, null, 2),
-        }],
+        return {
+          content: [{
+            type: "text" as const,
+            text: JSON.stringify({
+              name: component.name,
+              type: component.registry_type,
+              description: component.description,
+              dependencies: component.dependencies,
+              registryDependencies: component.registry_dependencies,
+              files: component.files,
+              sourceCode: component.source_code,
+              installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${component.name}`,
+            }, null, 2),
+          }],
+        }
+      } catch (err) {
+        return toolError(`Failed to get component "${name}"`, err)
       }
     }
   )
@@ -242,29 +259,33 @@ export function createMukokoMcpServer(): McpServer {
       query: z.string().describe("Search query to match against component names and descriptions"),
     },
     async ({ query }) => {
-      const components = await getAllComponents()
-      const lower = query.toLowerCase()
+      try {
+        const components = await getAllComponents()
+        const lower = query.toLowerCase()
 
-      const matches = components.filter(c =>
-        c.name.includes(lower) ||
-        c.description.toLowerCase().includes(lower)
-      )
+        const matches = components.filter(c =>
+          c.name.includes(lower) ||
+          c.description.toLowerCase().includes(lower)
+        )
 
-      if (matches.length === 0) {
-        return {
-          content: [{ type: "text" as const, text: `No components found matching "${query}".` }],
+        if (matches.length === 0) {
+          return {
+            content: [{ type: "text" as const, text: `No components found matching "${query}".` }],
+          }
         }
-      }
 
-      const results = matches.map(c => ({
-        name: c.name,
-        type: c.registry_type,
-        description: c.description,
-        installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${c.name}`,
-      }))
+        const results = matches.map(c => ({
+          name: c.name,
+          type: c.registry_type,
+          description: c.description,
+          installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${c.name}`,
+        }))
 
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(results, null, 2) }],
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(results, null, 2) }],
+        }
+      } catch (err) {
+        return toolError(`Failed to search components for "${query}"`, err)
       }
     }
   )
@@ -374,20 +395,24 @@ export { ${pascalName}, ${camelVariants}Variants }
       components: z.array(z.string()).describe("Component names to install"),
     },
     async ({ components: requested }) => {
-      const all = await getAllComponents()
-      const names = new Set(all.map(c => c.name))
-      const valid = requested.filter(n => names.has(n))
-      const invalid = requested.filter(n => !names.has(n))
+      try {
+        const all = await getAllComponents()
+        const names = new Set(all.map(c => c.name))
+        const valid = requested.filter(n => names.has(n))
+        const invalid = requested.filter(n => !names.has(n))
 
-      let text = ""
-      if (valid.length > 0) {
-        text += valid.map(n => `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${n}`).join("\n")
-      }
-      if (invalid.length > 0) {
-        text += `\n\nNot found: ${invalid.join(", ")}`
-      }
+        let text = ""
+        if (valid.length > 0) {
+          text += valid.map(n => `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${n}`).join("\n")
+        }
+        if (invalid.length > 0) {
+          text += `\n\nNot found: ${invalid.join(", ")}`
+        }
 
-      return { content: [{ type: "text" as const, text }] }
+        return { content: [{ type: "text" as const, text }] }
+      } catch (err) {
+        return toolError("Failed to get install commands", err)
+      }
     }
   )
 
