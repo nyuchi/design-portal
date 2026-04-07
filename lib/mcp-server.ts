@@ -7,11 +7,17 @@
  * All data is read from Supabase — zero hardcoded content.
  */
 
+import { readFile } from "fs/promises"
+import { join } from "path"
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { z } from "zod"
 import {
   getAllComponents,
   getComponent,
+  getComponentWithDocs,
+  searchComponents,
+  getDatabaseInfo,
   getBrandSystem,
   getMinerals,
   getSemanticColors,
@@ -143,64 +149,43 @@ export function createMukokoMcpServer(): McpServer {
     return { content: [{ type: "text" as const, text: `${context}: ${message}` }], isError: true as const }
   }
 
-  server.tool(
-    "get_architecture_info",
-    "Get Mukoko ecosystem architecture information: principles, data layer, pipeline, or sovereignty details.",
-    {
-      category: z.enum(["principles", "framework", "local-data-layer", "cloud-layer", "open-data-pipeline", "data-ownership", "sovereignty", "removed", "all"]).describe("Architecture category to retrieve"),
-    },
-    async ({ category }) => {
-      try {
-        const fetchMap: Record<string, () => Promise<unknown>> = {
-          "principles": () => getArchitecturePrinciples(),
-          "framework": () => getFrameworkDecision(),
-          "local-data-layer": () => getLocalDataLayer(),
-          "cloud-layer": () => getCloudLayer(),
-          "open-data-pipeline": () => getPipeline(),
-          "data-ownership": () => getDataOwnership(),
-          "sovereignty": () => getSovereignty(),
-          "removed": () => getRemovedTechnologies(),
-        }
-
-        if (category === "all") {
-          const results = await Promise.all(
-            Object.entries(fetchMap).map(async ([key, fn]) => [key, await fn()])
-          )
-          const data = Object.fromEntries(results)
-          return {
-            content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
-          }
-        }
-
-        const data = await fetchMap[category]()
-        return {
-          content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
-        }
-      } catch (err) {
-        return toolError("Failed to fetch architecture data", err)
-      }
+  /** Read a component's source code from disk, given its file path relative to project root. */
+  async function readSourceFromDisk(filePath: string): Promise<string | null> {
+    try {
+      return await readFile(join(process.cwd(), filePath), "utf-8")
+    } catch {
+      return null
     }
-  )
+  }
 
   server.tool(
     "list_components",
-    "List all Nyuchi design portal components. Optionally filter by type or category.",
+    "List Nyuchi design portal components. Filter by registry type (ui/hook/lib) and/or category.",
     {
-      type: z.enum(["all", "registry:ui", "registry:hook", "registry:lib"]).default("all").describe("Filter by component type"),
+      type: z.enum(["all", "registry:ui", "registry:hook", "registry:lib", "registry:block"]).default("all").describe("Filter by registry type"),
+      category: z.string().optional().describe("Filter by category (e.g. 'forms', 'overlay', 'navigation', 'data-display', 'layout', 'feedback', 'action', 'ai', 'chat', 'calendar', 'developer', 'security', 'ecommerce', 'mukoko')"),
     },
-    async ({ type }) => {
+    async ({ type, category }) => {
       try {
         const components = await getAllComponents()
-        const items = type === "all"
+
+        let items = type === "all"
           ? components
           : components.filter(c => c.registry_type === type)
+
+        if (category) {
+          const lower = category.toLowerCase()
+          items = items.filter(c => c.category?.toLowerCase().includes(lower))
+        }
 
         const summary = items.map(c => ({
           name: c.name,
           type: c.registry_type,
+          category: c.category,
           description: c.description,
           dependencies: c.dependencies,
           registryDependencies: c.registry_dependencies,
+          installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${c.name}`,
         }))
 
         return {
@@ -217,10 +202,13 @@ export function createMukokoMcpServer(): McpServer {
     "Get a component's full source code, metadata, and dependencies from the Nyuchi design portal.",
     {
       name: z.string().describe("Component name (e.g., 'button', 'card', 'use-toast')"),
+      include_docs: z.boolean().default(false).describe("Include documentation, use cases, and examples"),
     },
-    async ({ name }) => {
+    async ({ name, include_docs }) => {
       try {
-        const component = await getComponent(name)
+        const component = include_docs
+          ? await getComponentWithDocs(name)
+          : await getComponent(name)
 
         if (!component) {
           const all = await getAllComponents()
@@ -231,23 +219,82 @@ export function createMukokoMcpServer(): McpServer {
           }
         }
 
+        // Read source code from DB or fall back to disk
+        let sourceCode = component.source_code ?? null
+        if (!sourceCode && component.files.length > 0) {
+          sourceCode = await readSourceFromDisk(component.files[0].path)
+        }
+
+        const result: Record<string, unknown> = {
+          name: component.name,
+          type: component.registry_type,
+          category: component.category,
+          description: component.description,
+          dependencies: component.dependencies,
+          registryDependencies: component.registry_dependencies,
+          files: component.files,
+          tags: component.tags,
+          sourceCode,
+          installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${component.name}`,
+        }
+
+        if (include_docs && "docs" in component && component.docs) {
+          result.docs = component.docs
+        }
+
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+        }
+      } catch (err) {
+        return toolError(`Failed to get component "${name}"`, err)
+      }
+    }
+  )
+
+  server.tool(
+    "get_component_docs",
+    "Get detailed documentation for a component: use cases, variants, accessibility notes, and code examples.",
+    {
+      name: z.string().describe("Component name (e.g., 'button', 'dialog', 'data-table')"),
+    },
+    async ({ name }) => {
+      try {
+        const component = await getComponentWithDocs(name)
+
+        if (!component) {
+          return {
+            content: [{ type: "text" as const, text: `Component "${name}" not found.` }],
+            isError: true,
+          }
+        }
+
+        if (!component.docs) {
+          return {
+            content: [{
+              type: "text" as const,
+              text: JSON.stringify({
+                name: component.name,
+                description: component.description,
+                message: "No extended documentation available for this component.",
+                installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${component.name}`,
+              }, null, 2),
+            }],
+          }
+        }
+
         return {
           content: [{
             type: "text" as const,
             text: JSON.stringify({
               name: component.name,
-              type: component.registry_type,
               description: component.description,
-              dependencies: component.dependencies,
-              registryDependencies: component.registry_dependencies,
-              files: component.files,
-              sourceCode: component.source_code,
+              ...component.docs,
               installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${component.name}`,
             }, null, 2),
           }],
         }
       } catch (err) {
-        return toolError(`Failed to get component "${name}"`, err)
+        return toolError(`Failed to get docs for "${name}"`, err)
       }
     }
   )
@@ -257,16 +304,16 @@ export function createMukokoMcpServer(): McpServer {
     "Search Nyuchi design portal components by name or description keyword.",
     {
       query: z.string().describe("Search query to match against component names and descriptions"),
+      type: z.enum(["all", "registry:ui", "registry:hook", "registry:lib", "registry:block"]).default("all").describe("Filter results by registry type"),
     },
-    async ({ query }) => {
+    async ({ query, type }) => {
       try {
-        const components = await getAllComponents()
-        const lower = query.toLowerCase()
+        // Use DB-level ilike search for accuracy
+        let matches = await searchComponents(query)
 
-        const matches = components.filter(c =>
-          c.name.includes(lower) ||
-          c.description.toLowerCase().includes(lower)
-        )
+        if (type !== "all") {
+          matches = matches.filter(c => c.registry_type === type)
+        }
 
         if (matches.length === 0) {
           return {
@@ -277,6 +324,7 @@ export function createMukokoMcpServer(): McpServer {
         const results = matches.map(c => ({
           name: c.name,
           type: c.registry_type,
+          category: c.category,
           description: c.description,
           installCommand: `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/${c.name}`,
         }))
@@ -292,7 +340,7 @@ export function createMukokoMcpServer(): McpServer {
 
   server.tool(
     "get_design_tokens",
-    "Get Mukoko design tokens: Five African Minerals palette, semantic colors, typography, or spacing.",
+    "Get Mukoko design tokens: Five African Minerals palette, semantic colors, typography, spacing, or radii.",
     {
       category: z.enum(["minerals", "semantic-colors", "typography", "spacing", "radii", "all"]).default("all").describe("Token category to retrieve"),
     },
@@ -382,7 +430,7 @@ export { ${pascalName}, ${camelVariants}Variants }
       return {
         content: [{
           type: "text" as const,
-          text: `## ${pascalName}\n\n\`\`\`tsx\n${source}\`\`\`\n\n### Registry Entry\n\n\`\`\`json\n${JSON.stringify({ name, type: "registry:ui", description, dependencies: [...(hasRadix ? ["radix-ui"] : []), "class-variance-authority"], files: [{ path: `components/ui/${name}.tsx`, type: "registry:ui" }] }, null, 2)}\n\`\`\``,
+          text: `## ${pascalName}\n\n\`\`\`tsx\n${source}\`\`\`\n\n### Registry Entry\n\n\`\`\`json\n${JSON.stringify({ name, type: "registry:ui", description, dependencies: [...(hasRadix ? ["radix-ui"] : []), "class-variance-authority"], files: [{ path: `components/ui/${name}.tsx`, type: "registry:ui" }] }, null, 2)}\n\`\`\`\n\n### Next Steps\n1. Create \`components/ui/${name}.tsx\` with the code above\n2. Add the registry entry to \`registry.json\`\n3. Run \`pnpm registry:build\` to regenerate static files\n4. Verify: \`curl http://localhost:3000/api/v1/ui/${name}\``,
         }],
       }
     }
@@ -444,6 +492,61 @@ export { ${pascalName}, ${camelVariants}Variants }
       )
       return {
         content: [{ type: "text" as const, text: JSON.stringify({ ...found, mineralDetails: mineral }, null, 2) }],
+      }
+    }
+  )
+
+  server.tool(
+    "get_architecture_info",
+    "Get Mukoko ecosystem architecture information: principles, data layer, pipeline, or sovereignty details.",
+    {
+      category: z.enum(["principles", "framework", "local-data-layer", "cloud-layer", "open-data-pipeline", "data-ownership", "sovereignty", "removed", "all"]).describe("Architecture category to retrieve"),
+    },
+    async ({ category }) => {
+      try {
+        const fetchMap: Record<string, () => Promise<unknown>> = {
+          "principles": () => getArchitecturePrinciples(),
+          "framework": () => getFrameworkDecision(),
+          "local-data-layer": () => getLocalDataLayer(),
+          "cloud-layer": () => getCloudLayer(),
+          "open-data-pipeline": () => getPipeline(),
+          "data-ownership": () => getDataOwnership(),
+          "sovereignty": () => getSovereignty(),
+          "removed": () => getRemovedTechnologies(),
+        }
+
+        if (category === "all") {
+          const results = await Promise.all(
+            Object.entries(fetchMap).map(async ([key, fn]) => [key, await fn()])
+          )
+          const data = Object.fromEntries(results)
+          return {
+            content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+          }
+        }
+
+        const data = await fetchMap[category]()
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+        }
+      } catch (err) {
+        return toolError("Failed to fetch architecture data", err)
+      }
+    }
+  )
+
+  server.tool(
+    "get_database_status",
+    "Get the status and row counts for the design portal database.",
+    {},
+    async () => {
+      try {
+        const info = await getDatabaseInfo()
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(info, null, 2) }],
+        }
+      } catch (err) {
+        return toolError("Failed to get database status", err)
       }
     }
   )
