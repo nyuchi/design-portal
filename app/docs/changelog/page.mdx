@@ -7,6 +7,32 @@ description: "Version history and release notes for the Nyuchi Design Portal."
 
 All notable changes to the Nyuchi Design Portal are documented here. The registry follows [semantic versioning](https://semver.org/).
 
+## v4.0.26
+
+**Released:** Current
+
+Catches the repo up to the already-migrated Supabase backend — 545 stable components across 10 architecture layers.
+
+### New
+
+- **5 new Supabase tables:** `ai_instructions`, `documentation_pages`, `changelog`, `component_versions`, `fundi_issues`
+- **Design tokens moved to `nyuchi-tokens` component** — the `source_code` JSON payload replaces the legacy `brand_*` tables as the single source of truth for minerals, semantic colours, typography, spacing, and radii
+- **11 new REST API endpoints** — `/api/v1/ui/[name]/{docs,versions}`, `/search`, `/docs`, `/docs/[slug]`, `/changelog`, `/changelog/[version]`, `/fundi`, `/fundi/[id]`, `/fundi/stats`, `/ai/instructions`, `/ai/instructions/[name]`
+- **6 new MCP tools** — `get_layer_summary`, `get_ai_instructions`, `get_component_links`, `get_changelog`, `get_component_versions`, `get_documentation_page`
+- **MCP system prompt** now loaded from `ai_instructions` (name `nyuchi-mcp-system-prompt`) with a 60s TTL cache
+- **Layer breakdown** added to `/api/v1/stats`
+
+### Fixed (Issue #28)
+
+- `get_design_tokens` and `get_brand_info` no longer throw "Brand system not available" — they now read from the migrated `nyuchi-tokens` payload, with the legacy `brand_*` tables as a fallback
+- `scaffold_component` no longer emits `lucide-react` in dependencies when source code uses the `@/lib/icons` alias (path-aliased imports are treated as local)
+
+### Changed
+
+- Playground `ComponentGallery` reads from Supabase via `getAllComponents()` instead of importing `registry.json`
+- `/components/[name]` reads source code and metadata from the DB instead of the filesystem
+- Bumped Next.js 16.2.2 → 16.2.3 to clear GHSA-q4gf-8mx6-v5v3
+
 ## v4.0.1
 
 **Released:** Current

@@ -144,7 +144,7 @@ const jsonLd = {
       },
       description: SITE_DESCRIPTION,
       creator: { "@id": `${SITE_URL}/#organization` },
-      softwareVersion: "4.0.1",
+      softwareVersion: "4.0.26",
       downloadUrl: "https://design.nyuchi.com/api/v1/ui",
     },
   ],

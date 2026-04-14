@@ -282,7 +282,7 @@ export function Footer() {
               Nyuchi Africa
             </a>
           </span>
-          <span className="font-mono text-[10px] text-muted-foreground">v4.0.1</span>
+          <span className="font-mono text-[10px] text-muted-foreground">v4.0.26</span>
         </div>
       </div>
     </div>
