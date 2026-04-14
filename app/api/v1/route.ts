@@ -74,6 +74,38 @@ export async function GET() {
             href: "/mcp",
             description: "Model Context Protocol server — Streamable HTTP transport.",
           },
+          search: {
+            href: "/api/v1/search",
+            description: "Search components by name/description; filter by layer and category.",
+          },
+          componentDocs: {
+            href: "/api/v1/ui/{name}/docs",
+            description: "Component documentation — use cases, variants, accessibility.",
+          },
+          componentVersions: {
+            href: "/api/v1/ui/{name}/versions",
+            description: "Component version history.",
+          },
+          docs: {
+            href: "/api/v1/docs",
+            description: "Documentation pages from the knowledge base.",
+          },
+          changelog: {
+            href: "/api/v1/changelog",
+            description: "Release changelog.",
+          },
+          fundi: {
+            href: "/api/v1/fundi",
+            description: "Fundi self-healing issue tracking.",
+          },
+          aiInstructions: {
+            href: "/api/v1/ai/instructions",
+            description: "AI assistant instructions (Claude, Copilot, Cursor, MCP).",
+          },
+          stats: {
+            href: "/api/v1/stats",
+            description: "Public usage statistics (CC BY 4.0).",
+          },
         },
       },
       {
