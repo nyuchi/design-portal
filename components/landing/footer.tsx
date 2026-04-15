@@ -165,7 +165,7 @@ export function Footer() {
 
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">
-            <NyuchiLogo size={24} suffix="design" />
+            <NyuchiLogo size={24} showWordmark suffix="design" />
             <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
               The design system for the bundu ecosystem — powering mukoko, nyuchi, and every app in
               the family. Built on the Five African Minerals palette.

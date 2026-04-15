@@ -36,7 +36,7 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Left: Icon + wordmark */}
         <a href="/" className="flex items-center">
-          <NyuchiLogo size={26} suffix="design" />
+          <NyuchiLogo size={26} showWordmark suffix="design" />
         </a>
 
         {/* Center: Desktop-only nav links */}

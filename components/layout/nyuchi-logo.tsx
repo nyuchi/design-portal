@@ -2,6 +2,14 @@ import { cn } from "@/lib/utils"
 
 export interface NyuchiLogoProps {
   size?: number
+  /**
+   * When `true`, render the wordmark text alongside the icon. The Nextra
+   * navbar already prints the site title from metadata, so the navbar logo
+   * passes `false` (default) — this avoids the duplicate-wordmark bug seen
+   * on desktop. Other surfaces (e.g. landing footer/header) can opt in.
+   */
+  showWordmark?: boolean
+  /** Optional secondary word displayed in muted colour after "nyuchi". */
   suffix?: string
   className?: string
 }
@@ -12,9 +20,19 @@ export interface NyuchiLogoProps {
  * etc.) and is consumed by downstream apps via `npx shadcn add`. This copy is
  * only what the portal itself renders.
  */
-export function NyuchiLogo({ size = 24, suffix, className }: NyuchiLogoProps) {
+export function NyuchiLogo({
+  size = 24,
+  showWordmark = false,
+  suffix,
+  className,
+}: NyuchiLogoProps) {
   return (
-    <span className={cn("inline-flex items-center gap-2 font-serif font-semibold", className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-2 font-serif font-semibold whitespace-nowrap",
+        className
+      )}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -32,8 +50,14 @@ export function NyuchiLogo({ size = 24, suffix, className }: NyuchiLogoProps) {
         <line x1="2" y1="8.5" x2="22" y2="8.5" />
         <line x1="2" y1="15.5" x2="22" y2="15.5" />
       </svg>
-      <span className="tracking-tight lowercase">nyuchi</span>
-      {suffix && <span className="tracking-tight text-muted-foreground lowercase">{suffix}</span>}
+      {showWordmark && (
+        <>
+          <span className="tracking-tight lowercase">nyuchi</span>
+          {suffix && (
+            <span className="tracking-tight text-muted-foreground lowercase">{suffix}</span>
+          )}
+        </>
+      )}
     </span>
   )
 }
