@@ -13,7 +13,11 @@ const footerLink = "text-xs text-muted-foreground transition-colors hover:text-f
 
 export function Footer() {
   return (
-    <div className="px-4 pt-8 pb-10 sm:px-6 sm:pb-12">
+    // Full-bleed: Nextra's <Footer> wrapper applies its own max-width and
+    // left-aligns content inside the docs grid. The negative margins +
+    // 100vw width here break out of that container so the footer spans
+    // the full viewport on desktop, then re-centres its grid via mx-auto.
+    <div className="relative right-1/2 left-1/2 -mx-[50vw] w-screen px-4 pt-8 pb-10 sm:px-6 sm:pb-12">
       <div className="mx-auto max-w-6xl">
         <Separator className="mb-10" />
 
