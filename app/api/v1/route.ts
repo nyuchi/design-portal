@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createLogger } from "@/lib/observability"
-import { isSupabaseConfigured, isSeeded, getDatabaseInfo } from "@/lib/db"
+import { isSupabaseConfigured, getDatabaseInfo } from "@/lib/db"
 
 const logger = createLogger("api")
 
@@ -10,13 +10,12 @@ export async function GET() {
     let componentCount = 0
 
     if (isSupabaseConfigured()) {
-      const seeded = await isSeeded().catch(() => false)
-      if (seeded) {
+      const info = await getDatabaseInfo().catch(() => null)
+      if (info?.status === "connected") {
         dbStatus = "connected"
-        const info = await getDatabaseInfo().catch(() => null)
-        componentCount = info?.components ?? 0
+        componentCount = info.components
       } else {
-        dbStatus = "not_seeded"
+        dbStatus = "error"
       }
     }
 

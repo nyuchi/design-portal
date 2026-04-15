@@ -11,14 +11,12 @@ vi.mock("next/server", () => ({
   },
 }))
 
-// Mock the DB layer — registry now lives in Supabase, not registry.json.
+// Mock the DB layer — registry lives in Supabase.
 const mockIsSupabaseConfigured = vi.fn()
-const mockIsSeeded = vi.fn()
 const mockGetAllComponents = vi.fn()
 
 vi.mock("@/lib/db", () => ({
   isSupabaseConfigured: () => mockIsSupabaseConfigured(),
-  isSeeded: () => mockIsSeeded(),
   getAllComponents: () => mockGetAllComponents(),
 }))
 
@@ -31,7 +29,6 @@ import { GET } from "@/app/api/v1/ui/route"
 describe("GET /api/v1/ui", () => {
   beforeEach(() => {
     mockIsSupabaseConfigured.mockReset()
-    mockIsSeeded.mockReset()
     mockGetAllComponents.mockReset()
   })
 
@@ -43,18 +40,8 @@ describe("GET /api/v1/ui", () => {
     expect(res.data.error).toBe("Database not configured")
   })
 
-  it("returns 503 when Supabase is not seeded", async () => {
-    mockIsSupabaseConfigured.mockReturnValue(true)
-    mockIsSeeded.mockResolvedValue(false)
-
-    const res = (await GET()) as unknown as { status: number; data: { error: string } }
-    expect(res.status).toBe(503)
-    expect(res.data.error).toBe("Database not seeded")
-  })
-
   it("returns registry payload with the correct schema and items", async () => {
     mockIsSupabaseConfigured.mockReturnValue(true)
-    mockIsSeeded.mockResolvedValue(true)
     mockGetAllComponents.mockResolvedValue([
       {
         name: "button",
@@ -97,7 +84,6 @@ describe("GET /api/v1/ui", () => {
 
   it("each item has required fields and a recognisable type", async () => {
     mockIsSupabaseConfigured.mockReturnValue(true)
-    mockIsSeeded.mockResolvedValue(true)
     mockGetAllComponents.mockResolvedValue([
       {
         name: "button",
@@ -142,7 +128,6 @@ describe("GET /api/v1/ui", () => {
 
   it("returns 500 when the DB query throws", async () => {
     mockIsSupabaseConfigured.mockReturnValue(true)
-    mockIsSeeded.mockResolvedValue(true)
     mockGetAllComponents.mockRejectedValue(new Error("connection failed"))
 
     const res = (await GET()) as unknown as { status: number; data: { error: string } }

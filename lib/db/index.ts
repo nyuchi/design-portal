@@ -430,17 +430,6 @@ export async function getDatabaseInfo(): Promise<DatabaseInfo> {
   }
 }
 
-/**
- * Check if the database has been seeded (has at least one component).
- */
-export async function isSeeded(): Promise<boolean> {
-  const { count } = await getPublicClient()
-    .from("components")
-    .select("*", { count: "exact", head: true })
-
-  return (count ?? 0) > 0
-}
-
 // ── Brand queries ──────────────────────────────────────────────────
 
 /**
