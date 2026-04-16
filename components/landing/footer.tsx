@@ -26,7 +26,7 @@ export function Footer() {
           <div className="flex flex-col gap-2">
             <span className="text-xs font-medium text-foreground">Getting Started</span>
             <a href="/docs" className={footerLink}>
-              Documentation
+              Introduction
             </a>
             <a href="/docs/installation" className={footerLink}>
               Installation
@@ -39,6 +39,12 @@ export function Footer() {
             </a>
             <a href="/docs/dark-mode" className={footerLink}>
               Dark Mode
+            </a>
+            <a href="/docs/api-reference" className={footerLink}>
+              API Reference
+            </a>
+            <a href="/docs/contributing" className={footerLink}>
+              Contributing
             </a>
             <a href="/docs/changelog" className={footerLink}>
               Changelog
@@ -83,11 +89,8 @@ export function Footer() {
             <a href="/foundations/layout" className={footerLink}>
               Layout
             </a>
-            <a href="/design" className={footerLink}>
-              Design
-            </a>
             <a href="/design/tokens" className={footerLink}>
-              Tokens
+              Semantic Tokens
             </a>
             <a href="/design/icons" className={footerLink}>
               Icons
@@ -98,16 +101,7 @@ export function Footer() {
           <div className="flex flex-col gap-2">
             <span className="text-xs font-medium text-foreground">Brand</span>
             <a href="/brand" className={footerLink}>
-              Overview
-            </a>
-            <a href="/brand/colors" className={footerLink}>
-              Colors
-            </a>
-            <a href="/brand/components" className={footerLink}>
-              Component Specs
-            </a>
-            <a href="/brand/guidelines" className={footerLink}>
-              Guidelines
+              Brand Guidelines
             </a>
             <a href="/content" className={footerLink}>
               Content
@@ -117,26 +111,26 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Patterns & Architecture */}
+          {/* Architecture */}
           <div className="flex flex-col gap-2">
-            <span className="text-xs font-medium text-foreground">Patterns</span>
-            <a href="/patterns" className={footerLink}>
-              Overview
+            <span className="text-xs font-medium text-foreground">Architecture</span>
+            <a href="/architecture" className={footerLink}>
+              3D Architecture
             </a>
-            <a href="/patterns/resilience" className={footerLink}>
-              Resilience
+            <a href="/architecture/layers" className={footerLink}>
+              Layer Decision Guide
+            </a>
+            <a href="/architecture/component-backlinks" className={footerLink}>
+              Component Backlinks
+            </a>
+            <a href="/architecture/fundi" className={footerLink}>
+              Fundi (L9)
+            </a>
+            <a href="/patterns" className={footerLink}>
+              Patterns
             </a>
             <a href="/patterns/error-boundaries" className={footerLink}>
               Error Boundaries
-            </a>
-            <a href="/patterns/ai-safety" className={footerLink}>
-              AI Safety
-            </a>
-            <a href="/architecture" className={footerLink}>
-              Architecture
-            </a>
-            <a href="/architecture/principles" className={footerLink}>
-              Principles
             </a>
           </div>
 
