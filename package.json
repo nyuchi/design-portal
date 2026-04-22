@@ -16,7 +16,13 @@
     "registry:sync": "tsx scripts/sync-registry.ts",
     "registry:verify": "tsx scripts/sync-registry.ts --check",
     "prepare": "husky",
-    "audit:check": "pnpm audit --audit-level=moderate --ignore-registry-errors"
+    "audit:check": "pnpm audit --audit-level=moderate --ignore-registry-errors",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css,yaml,yml}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,css,yaml,yml}\" --ignore-path .prettierignore",
+    "lint:md": "markdownlint-cli2",
+    "lint:yaml": "yamllint .",
+    "lint:json": "node -e \"const{execSync}=require('child_process');const fs=require('fs');const files=execSync(\\\"git ls-files '*.json' ':!pnpm-lock.yaml'\\\").toString().trim().split('\\n').filter(Boolean);let fail=0;for(const f of files){try{JSON.parse(fs.readFileSync(f,'utf8'))}catch(e){console.error('INVALID JSON:',f,e.message);fail=1}}process.exit(fail)\"",
+    "check": "pnpm format:check && pnpm lint && pnpm lint:md && pnpm lint:json && pnpm typecheck && pnpm test && pnpm audit:check && pnpm registry:verify && pnpm build"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -91,6 +97,7 @@
     "husky": "^9.1.7",
     "jsdom": "^29.0.2",
     "lint-staged": "^16.4.0",
+    "markdownlint-cli2": "0.15.0",
     "pagefind": "^1.5.2",
     "postcss": "^8.5.10",
     "prettier": "^3.8.3",
@@ -128,7 +135,9 @@
       "tinyglobby>picomatch": "^4.0.4",
       "minimatch>brace-expansion": "^5.0.5",
       "dompurify": "^3.4.0",
-      "sanitize-html": "^2.17.3"
+      "sanitize-html": "^2.17.3",
+      "js-yaml": "^4.1.1",
+      "markdown-it": "^14.1.1"
     }
   }
 }

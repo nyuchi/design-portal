@@ -290,30 +290,80 @@ __tests__/
 
 ## Pull Request Process
 
-### Before Submitting
+### Before submitting — run the same gates CI runs
 
-Run the full CI pipeline locally:
+Use the single `pnpm check` script. It chains every CI gate locally so you catch problems before they reach the runner. **Run it before every push** — the husky pre-commit hook is a safety net, not a substitute.
 
 ```bash
-pnpm lint && pnpm typecheck && pnpm test && pnpm build
+pnpm check
 ```
 
-All four must pass. The CI pipeline runs lint, typecheck, and test in parallel, then build.
+That's equivalent to:
+
+```bash
+pnpm format:check    # prettier check (no writes)
+pnpm lint            # ESLint, zero warnings
+pnpm lint:md         # markdownlint-cli2
+pnpm lint:json       # every tracked JSON parses
+pnpm typecheck       # tsc --noEmit
+pnpm test            # vitest single run
+pnpm audit:check     # pnpm audit --audit-level=moderate
+pnpm registry:verify # CI fails if registry.json drifts from Supabase
+pnpm build           # next build (terminal gate)
+```
+
+If any step fails, `pnpm check` exits non-zero on the first failure. Fix forwards and re-run.
+
+#### One-time tooling setup
+
+| Tool                 | Install                                                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Node 22 + pnpm 10.33 | `nvm use 22` then `corepack enable`                                                                                                        |
+| `markdownlint-cli2`  | `pnpm install` (committed devDep)                                                                                                          |
+| `prettier`, `eslint` | `pnpm install` (committed devDeps)                                                                                                         |
+| `actionlint`         | `brew install actionlint` or `bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)` |
+| `yamllint`           | `pip install yamllint==1.35.1` (one-time)                                                                                                  |
+
+The two non-`pnpm` tools (`actionlint`, `yamllint`) are run on CI by the `lint` workflow but aren't strictly required locally — they're pure static checks on YAML files you'd typically run as a sanity check after editing `.github/workflows/*.yml` or `.yamllint.yml`. Install them if you regularly touch CI configs; otherwise CI will catch issues.
+
+#### Quick fix-everything
+
+If `pnpm check` complains about formatting or auto-fixable lint, run:
+
+```bash
+pnpm format    # auto-fix prettier
+pnpm lint:fix  # auto-fix ESLint
+pnpm check     # re-run full gate
+```
+
+### CI workflows that run on your PR
+
+Detailed in [`README.md`](README.md#ci-workflows). Required for merge:
+
+- **`ci.yml`** — `Lint`, `Type Check`, `Test`, `Build`, `Security Audit`, `Registry Snapshot`
+- **`lint.yml`** — `lint / actionlint`, `lint / JSON validity`, `lint / prettier`, `lint / markdownlint`, `lint / yamllint`
+- **`CodeQL`** — `Analyze (actions)`, `Analyze (javascript-typescript)`
+
+`Claude Code Review` runs on every PR comment but is advisory, not a merge gate. The dependency tree inside `ci.yml` is:
+
+```text
+Tier 1 parallel:  Audit, Lint, Type Check, Registry Snapshot
+Tier 2:           Test                              (waits on Lint, Type Check)
+Tier 3 terminal:  Build                             (waits on all of the above)
+```
 
 ### PR Checklist
 
-- [ ] Code follows TypeScript strict mode -- no untyped `any`
-- [ ] Styling uses Tailwind utility classes only -- no inline styles or hardcoded colors
+- [ ] `pnpm check` passes locally (single command — see above)
+- [ ] Code follows TypeScript strict mode — no untyped `any`
+- [ ] Styling uses Tailwind utility classes only — no inline styles or hardcoded hex colors
 - [ ] Components use CVA + cn() + data-slot pattern
-- [ ] New components are upserted into the Supabase `components` table
-- [ ] `pnpm registry:sync` run locally (regenerates `registry.json` snapshot from DB)
+- [ ] New components are upserted into the Supabase `components` table; `pnpm registry:sync` regenerates `registry.json`
 - [ ] Tests added for new functionality
-- [ ] All existing tests pass (`pnpm test`)
-- [ ] Lint passes (`pnpm lint`)
-- [ ] Type check passes (`pnpm typecheck`)
-- [ ] Build succeeds (`pnpm build`)
-- [ ] Accessibility reviewed (APCA contrast, touch targets, keyboard nav)
-- [ ] Brand wordmarks are lowercase (mukoko, nyuchi, shamwari, bundu, nhimbe)
+- [ ] Accessibility reviewed (APCA contrast, 56px default / 48px minimum touch targets, keyboard nav)
+- [ ] Brand wordmarks are lowercase (`mukoko`, `nyuchi`, `shamwari`, `bundu`, `nhimbe`)
+- [ ] Buttons are pill-shaped (`rounded-full`)
+- [ ] Any security finding from `/security-review` is fixed in this PR (per CLAUDE.md §15 rule 22 — never deferred)
 
 ### Review Process
 

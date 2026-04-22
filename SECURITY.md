@@ -99,6 +99,30 @@ Actions within these conditions will not be pursued as violations of computer-mi
 - CodeQL analysis (JavaScript / TypeScript + Actions) runs via GitHub code-scanning on every PR.
 - Secret scanning with push-protection is enabled at the repository level.
 
+## How CI enforces these gates
+
+The same checks that block a merge to `main` are runnable locally with one command:
+
+```bash
+pnpm check
+```
+
+This chains every CI gate — `format:check`, `lint`, `lint:md`, `lint:json`, `typecheck`, `test`, `audit:check`, `registry:verify`, `build` — and exits non-zero on the first failure. Run it before every push to keep contributions clean and tidy. See [`CONTRIBUTING.md`](CONTRIBUTING.md#before-submitting--run-the-same-gates-ci-runs) for the contributor workflow and one-time tooling setup.
+
+CI workflows that gate merge to `main`:
+
+| Workflow                                                                 | Security-relevant jobs                                                                                                             |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| [`ci.yml`](.github/workflows/ci.yml)                                     | `Security Audit` (pnpm audit, fails on moderate+), `Lint`, `Type Check`, `Test`, `Build`                                           |
+| [`lint.yml`](.github/workflows/lint.yml)                                 | `lint / actionlint` (workflow YAML lint), `lint / yamllint`, `lint / JSON validity`, `lint / prettier`, `lint / markdownlint`      |
+| [CodeQL](https://github.com/nyuchi/design-portal/security/code-scanning) | `Analyze (actions)` and `Analyze (javascript-typescript)` — autocatches `actions/missing-workflow-permissions`, common JS/TS sinks |
+
+Every job in every workflow declares an explicit `permissions:` block (`contents: read` by default) — required by the org-wide `actions/missing-workflow-permissions` CodeQL rule.
+
+### No-deferral policy
+
+Per `CLAUDE.md` §15 rule 22, **security findings from any review/audit (`/security-review`, manual audit, CodeQL alert, Dependabot advisory, `pnpm audit`) must be fixed in the current PR — never deferred to a follow-up issue.** This rule applies even when the original PR scope is "docs only" and even when false-positive filtering downgrades a finding to "lack of hardening". The only acceptable exception is when the fix concretely depends on infrastructure that isn't on the PR's branch (e.g. a Supabase migration the developer must run); in that case, document the gap here in `SECURITY.md`, open a tracking issue, and still ship every code-level mitigation that doesn't require the missing infrastructure.
+
 ## Contact
 
 - Primary: GitHub security advisories — <https://github.com/nyuchitech/design-portal/security/advisories/new>

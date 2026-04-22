@@ -254,16 +254,67 @@ Layer 5: Server page wrappers (page.tsx)
 
 ## Commands
 
-| Command                | Description                                                  |
-| ---------------------- | ------------------------------------------------------------ |
-| `pnpm dev`             | Start development server                                     |
-| `pnpm build`           | Production build                                             |
-| `pnpm lint`            | Run ESLint (zero warnings enforced)                          |
-| `pnpm test`            | Run Vitest test suite                                        |
-| `pnpm test:watch`      | Watch mode                                                   |
-| `pnpm typecheck`       | TypeScript type check                                        |
-| `pnpm registry:sync`   | Regenerate `registry.json` + portal primitives from Supabase |
-| `pnpm registry:verify` | Non-mutating; CI-safe drift check                            |
+| Command                | Description                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `pnpm dev`             | Start development server (port 11736)                                                |
+| `pnpm build`           | Production build (postbuild runs Pagefind to index `.next/server/app`)               |
+| `pnpm check`           | **Run every CI gate locally** — same set CI runs on a PR. Use this before pushing.   |
+| `pnpm format`          | Auto-fix formatting (prettier) across the whole tree                                 |
+| `pnpm format:check`    | Check formatting without writing — fails if anything would change                    |
+| `pnpm lint`            | ESLint (zero warnings enforced)                                                      |
+| `pnpm lint:fix`        | ESLint with `--fix`                                                                  |
+| `pnpm lint:md`         | markdownlint-cli2 across all `*.md` (config: `.markdownlint-cli2.jsonc`)             |
+| `pnpm lint:json`       | Parse every tracked `*.json` to ensure validity                                      |
+| `pnpm lint:yaml`       | yamllint (requires `pip install yamllint`)                                           |
+| `pnpm typecheck`       | TypeScript type check (`tsc --noEmit`)                                               |
+| `pnpm test`            | Vitest, single run                                                                   |
+| `pnpm test:watch`      | Vitest watch mode                                                                    |
+| `pnpm audit:check`     | `pnpm audit --audit-level=moderate` — same gate CI runs                              |
+| `pnpm registry:sync`   | Regenerate `registry.json` + committed primitives from Supabase                      |
+| `pnpm registry:verify` | Non-mutating; CI-safe drift check (run this before pushing if you've touched the DB) |
+
+### Run every CI gate before pushing
+
+`pnpm check` chains all of the above (except dev/build watch modes) into one command. **It is the local mirror of CI** — if `pnpm check` is green, CI will be too:
+
+```bash
+pnpm check
+# = format:check && lint && lint:md && lint:json
+#   && typecheck && test && audit:check && registry:verify && build
+```
+
+Run it before every push. It's also the recommended pre-PR check; the husky pre-commit hook is the safety net (`lint-staged → typecheck → audit`), not a substitute.
+
+---
+
+## CI workflows
+
+Three workflows enforce the gates that block a merge to `main`. All are in `.github/workflows/`. The full required-check matrix lives in [`CLAUDE.md`](CLAUDE.md) §14.
+
+| Workflow                                                   | Trigger                             | Jobs / required checks                                                                                   |
+| ---------------------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [`ci.yml`](.github/workflows/ci.yml)                       | push to `main`, PR to `main`        | `Lint`, `Type Check`, `Test`, `Build`, `Security Audit`, `Registry Snapshot`                             |
+| [`lint.yml`](.github/workflows/lint.yml)                   | push to `main`, PR to `main`        | `lint / actionlint`, `lint / JSON validity`, `lint / prettier`, `lint / markdownlint`, `lint / yamllint` |
+| [`claude-review.yml`](.github/workflows/claude-review.yml) | PR open/sync, PR comment, PR review | AI code review on every human comment (advisory, not a merge gate)                                       |
+| [`release.yml`](.github/workflows/release.yml)             | push to `main`                      | Auto-creates a GitHub release when `package.json` version bumps                                          |
+
+Dependency tree inside `ci.yml`:
+
+```text
+Tier 1 (parallel, fast)
+├── Security Audit
+├── Lint
+├── Type Check
+└── Registry Snapshot
+
+Tier 2
+└── Test                   (waits on Lint, Type Check)
+
+Tier 3 — terminal gate
+└── Build                  (waits on Audit, Lint, Type Check, Test, Registry)
+```
+
+`Build` is the slowest — it never starts unless every cheaper signal is green.
 
 ---
 
