@@ -728,3 +728,35 @@ export interface Database {
     }
   }
 }
+
+// ── Architecture (3D frontend model — issue #46 table-backed doctrine) ──
+
+export type ArchitectureAxisGeometry = "horizontal" | "vertical" | "depth" | "external"
+
+export interface ArchitectureFrontendAxisRow {
+  id: number
+  name: string
+  title: string
+  description: string
+  geometry: ArchitectureAxisGeometry | string
+  metaphor: string
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ArchitectureFrontendLayerRow {
+  id: number
+  layer_number: number
+  sub_label: string
+  title: string
+  axis_name: string
+  role: string
+  description: string
+  covenant: string
+  stakeholder: string
+  implementation_rules: string[]
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
