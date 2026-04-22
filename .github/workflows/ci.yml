@@ -12,19 +12,18 @@ on:
 permissions:
   contents: read
 
-# Job-name fields below intentionally embed the "CI / " prefix so the
-# emitted check name matches the org-wide branch-protection rule
-# ("CI / Build", "CI / Lint", "CI / Test", etc.). GitHub's PR UI also
-# uses "<workflow> / <job>" as a visual grouping label, but the Checks
-# API reports the bare job `name:` field — without the prefix here,
-# branch protection sees "Build" while it's waiting for "CI / Build"
-# and the required check stays in "Waiting for status to be reported".
-# Same convention as `.github/workflows/lint.yml`. See CLAUDE.md §14
-# "Org-wide required checks".
+# Job names below are the BARE names ("Build", "Lint", "Test",
+# "Type Check", "Security Audit", "Registry Snapshot") because the
+# org-wide branch-protection rule on `main` requires CI checks under
+# their bare names. NB: this is the OPPOSITE convention from
+# `.github/workflows/lint.yml`, which requires "lint / *" prefixed
+# names. The asymmetry is intentional at the org level — see CLAUDE.md
+# §14 "Org-wide required checks" for the authoritative table of
+# required check names per workflow.
 
 jobs:
   audit:
-    name: CI / Security Audit
+    name: Security Audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,7 +41,7 @@ jobs:
       - run: pnpm audit --audit-level=moderate --ignore-registry-errors
 
   registry:
-    name: CI / Registry Snapshot
+    name: Registry Snapshot
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -62,7 +61,7 @@ jobs:
         run: pnpm registry:verify
 
   lint:
-    name: CI / Lint
+    name: Lint
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -79,7 +78,7 @@ jobs:
         run: pnpm exec prettier --check "**/*.{ts,tsx,js,mjs,json,md,css,yaml,yml}" --ignore-path .prettierignore
 
   typecheck:
-    name: CI / Type Check
+    name: Type Check
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -94,7 +93,7 @@ jobs:
       - run: pnpm typecheck
 
   test:
-    name: CI / Test
+    name: Test
     runs-on: ubuntu-latest
     # Tests depend on the code being structurally sound — no point burning
     # runner minutes on `pnpm test` if eslint or tsc already failed.
@@ -112,7 +111,7 @@ jobs:
       - run: pnpm test
 
   build:
-    name: CI / Build
+    name: Build
     runs-on: ubuntu-latest
     # Build is the terminal gate — runs only when every other CI job
     # has finished successfully. Order in `needs:` is: structural

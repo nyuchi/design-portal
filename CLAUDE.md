@@ -766,33 +766,41 @@ Three workflows in `.github/workflows/`:
 2. Verifies tag version matches `package.json` version
 3. Creates a GitHub release with auto-generated release notes
 
-### Org-wide required checks — `<workflow> /` naming convention
+### Org-wide required checks — naming conventions per workflow
 
-Every bundu ecosystem repo's branch-protection rule on `main` requires status checks named in `<workflow> / <job>` form. The current required set is:
+Every bundu ecosystem repo's branch-protection rule on `main` requires the following check names, exactly. **The convention is asymmetric across workflows** — the CI workflow uses bare job names, the lint workflow uses prefixed names. Not stylistic — both must match the org rule literally.
 
-| Reported check name      | Source workflow / job                          |
-| ------------------------ | ---------------------------------------------- |
-| `CI / Build`             | `.github/workflows/ci.yml` → `build`           |
-| `CI / Lint`              | `.github/workflows/ci.yml` → `lint`            |
-| `CI / Test`              | `.github/workflows/ci.yml` → `test`            |
-| `CI / Type Check`        | `.github/workflows/ci.yml` → `typecheck`       |
-| `CI / Security Audit`    | `.github/workflows/ci.yml` → `audit`           |
-| `CI / Registry Snapshot` | `.github/workflows/ci.yml` → `registry`        |
-| `lint / actionlint`      | `.github/workflows/lint.yml` → `actionlint`    |
-| `lint / JSON validity`   | `.github/workflows/lint.yml` → `json-validity` |
-| `lint / prettier`        | `.github/workflows/lint.yml` → `prettier`      |
-| `lint / markdownlint`    | `.github/workflows/lint.yml` → `markdownlint`  |
-| `lint / yamllint`        | `.github/workflows/lint.yml` → `yamllint`      |
+| Reported check name    | Source workflow / job                          | Required by branch protection |
+| ---------------------- | ---------------------------------------------- | ----------------------------- |
+| `Build`                | `.github/workflows/ci.yml` → `build`           | Yes                           |
+| `Lint`                 | `.github/workflows/ci.yml` → `lint`            | Yes                           |
+| `Type Check`           | `.github/workflows/ci.yml` → `typecheck`       | Yes                           |
+| `Security Audit`       | `.github/workflows/ci.yml` → `audit`           | Yes                           |
+| `Test`                 | `.github/workflows/ci.yml` → `test`            | No (informational)            |
+| `Registry Snapshot`    | `.github/workflows/ci.yml` → `registry`        | No (informational)            |
+| `lint / actionlint`    | `.github/workflows/lint.yml` → `actionlint`    | Yes                           |
+| `lint / JSON validity` | `.github/workflows/lint.yml` → `json-validity` | Yes                           |
+| `lint / prettier`      | `.github/workflows/lint.yml` → `prettier`      | Yes                           |
+| `lint / markdownlint`  | `.github/workflows/lint.yml` → `markdownlint`  | Yes                           |
+| `lint / yamllint`      | `.github/workflows/lint.yml` → `yamllint`      | Yes                           |
 
-**Critical implementation detail.** The `<workflow> /` prefix is **part of the check name** as far as branch protection is concerned, even though GitHub's PR UI also uses it as a visual grouping label. GitHub Actions reports the bare job `name:` field to the Checks API — so each job's `name:` field must **literally include the prefix**:
+**Critical implementation detail.** GitHub Actions reports the bare job `name:` field to the Checks API — the `<workflow> /` prefix that the PR UI shows is a visual grouping label, NOT part of the reported check name. So the job's `name:` field must literally match the required check name:
 
 ```yaml
+# ci.yml — CI required checks are bare names
 jobs:
   build:
-    name: CI / Build # not just "Build"
+    name: Build           # not "CI / Build"
+  lint:
+    name: Lint            # not "CI / Lint"
+
+# lint.yml — lint required checks include the "lint / " prefix
+jobs:
+  actionlint:
+    name: lint / actionlint   # not just "actionlint"
 ```
 
-If you call the job `Build`, branch protection sees a check called `Build` and waits forever for `CI / Build`. Both `ci.yml` and `lint.yml` in this repo are the canonical templates; copy the `name:` pattern when bootstrapping a new ecosystem repo.
+The two conventions are inconsistent at the org level (history, not design), but both need to match what branch protection has configured. If you rename a job, update the org-level branch-protection rule in the same change. Both `ci.yml` and `lint.yml` in this repo are the canonical templates; copy the `name:` pattern when bootstrapping a new ecosystem repo.
 
 ### Versioning
 
