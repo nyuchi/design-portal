@@ -17,10 +17,14 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      - name: Install and run actionlint
-        run: |
-          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-          ./actionlint -color
+      # raven-actions/actionlint is the upstream-recommended wrapper
+      # (see https://github.com/rhysd/actionlint#on-github-actions).
+      # It installs the pinned binary, runs it against every workflow
+      # under .github/workflows, and fails the job on any finding.
+      - name: Run actionlint
+        uses: raven-actions/actionlint@v2
+        with:
+          files: ".github/workflows/*.yml"
 
   json-validity:
     name: JSON validity
