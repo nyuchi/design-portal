@@ -17,13 +17,17 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      # Go is preinstalled on ubuntu-latest runners. Install and run the
-      # upstream actionlint binary directly — no third-party action, no
-      # install-script process-substitution that can misbehave on the runner.
-      - name: Install actionlint
-        run: go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
-      - name: Run actionlint
-        run: actionlint -color
+      # Download the prebuilt actionlint binary directly from the upstream
+      # release — no third-party action, no Go PATH dance, no install-script
+      # process-substitution. This is the most environment-independent approach.
+      - name: Install and run actionlint
+        env:
+          ACTIONLINT_VERSION: 1.7.12
+        run: |
+          curl -fsSL -o actionlint.tar.gz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          tar -xzf actionlint.tar.gz actionlint
+          chmod +x ./actionlint
+          ./actionlint -color
 
   json-validity:
     name: JSON validity
