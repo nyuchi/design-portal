@@ -8,7 +8,7 @@
 
 ## 1. Project Identity
 
-**Nyuchi Design Portal** is the canonical design system, component registry, brand documentation hub, and developer portal for the bundu ecosystem. It serves 545 stable registry items across 10 architecture layers (3D model: X-axis L2→L3→L6→L7 composition, Y-axis L1/L4/L5 foundations, Z-axis L8 runtime, Outside L9 docs, Meta L10 templates) built on the **Five African Minerals** design system, installable via the shadcn CLI:
+**Nyuchi Design Portal** is the canonical design system, component registry, brand documentation hub, and developer portal for the bundu ecosystem. It serves 545 stable registry items across a 3D frontend architecture — **ten layers across five axes**: X-axis (horizontal composition — L2 primitives → L3 brand → L6 pages → L7 shell), Y-axis (vertical infrastructure — L1 tokens, L4 safety, L5 resilience), Z-axis (depth observation — L8 assurance), Outside (L9 fundi — self-healing actors), and Documentation (L10). Built on the **Five African Minerals** design system, installable via the shadcn CLI:
 
 ```
 npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/<component>
@@ -64,27 +64,27 @@ design-portal (this repo)
 
 ## 3. Tech Stack
 
-| Layer                | Technology                                     | Version                              |
-| -------------------- | ---------------------------------------------- | ------------------------------------ |
-| Framework            | Next.js (App Router) + Nextra MDX docs         | 16.2.3                               |
-| Language             | TypeScript (strict mode)                       | 6.0.2                                |
-| Package Manager      | pnpm                                           | —                                    |
-| Styling              | Tailwind CSS + CSS custom properties           | 4.2.2                                |
-| Component Primitives | Radix UI + Base UI                             | radix-ui 1.4.3, @base-ui/react 1.3.0 |
-| Variant Management   | class-variance-authority (CVA)                 | 0.7.1                                |
-| Class Composition    | clsx + tailwind-merge                          | via `cn()` in `lib/utils.ts`         |
-| Icons                | Lucide React                                   | 1.7.0                                |
-| Theming              | next-themes                                    | 0.4.6                                |
-| Forms                | react-hook-form + zod                          | 7.72.0 / 4.3.6                       |
-| Charts               | Recharts                                       | 3.8.1                                |
-| Testing              | Vitest + Testing Library                       | 4.1.2                                |
-| Observability        | Structured logging (`lib/observability.ts`)    | Built-in                             |
-| Metrics              | MCP usage tracking (`lib/metrics.ts`)          | Built-in                             |
-| Site search          | Pagefind (built in `postbuild` step)           | static index in `public/_pagefind/`  |
-| Database             | Supabase (PostgreSQL) — single source of truth | 2.103.0                              |
-| MCP Server           | @modelcontextprotocol/sdk (Streamable HTTP)    | 1.29.0                               |
-| CI/CD                | GitHub Actions + Vercel                        | —                                    |
-| Deployment           | Vercel                                         | —                                    |
+| Layer                | Technology                                     | Version                                    |
+| -------------------- | ---------------------------------------------- | ------------------------------------------ |
+| Framework            | Next.js (App Router) + Nextra MDX docs         | 16.2.4                                     |
+| Language             | TypeScript (strict mode)                       | 6.0.3                                      |
+| Package Manager      | pnpm                                           | 10.33.0                                    |
+| Styling              | Tailwind CSS + CSS custom properties           | 4.2.4                                      |
+| Component Primitives | Radix UI + Base UI                             | radix-ui 1.4.3, @base-ui/react 1.4.1       |
+| Variant Management   | class-variance-authority (CVA)                 | 0.7.1                                      |
+| Class Composition    | clsx + tailwind-merge                          | via `cn()` in `lib/utils.ts`               |
+| Icons                | Lucide React                                   | 1.8.0                                      |
+| Theming              | next-themes                                    | 0.4.6                                      |
+| Forms                | react-hook-form + zod                          | 7.73.1 / 4.3.6                             |
+| Charts               | Recharts                                       | 3.8.1                                      |
+| Testing              | Vitest + Testing Library                       | 4.1.5                                      |
+| Observability        | Structured logging (`lib/observability.ts`)    | Built-in                                   |
+| Metrics              | MCP usage tracking (`lib/metrics.ts`)          | Built-in                                   |
+| Site search          | Pagefind (built in `postbuild` step)           | 1.5.2, static index in `public/_pagefind/` |
+| Database             | Supabase (PostgreSQL) — single source of truth | @supabase/supabase-js 2.104.0              |
+| MCP Server           | @modelcontextprotocol/sdk (Streamable HTTP)    | 1.29.0                                     |
+| CI/CD                | GitHub Actions + Vercel                        | —                                          |
+| Deployment           | Vercel                                         | —                                          |
 
 ---
 
@@ -278,24 +278,32 @@ SUPABASE_SERVICE_ROLE_KEY      — write access; server-only, never expose
 
 Every component follows a layered pattern. This is mandatory for all bundu ecosystem apps consuming this registry.
 
-```
-Layer 1: Shared primitives (Button, Input, Card, Badge, etc.)
-    ↓ imported by
-Layer 2: Domain-specific composites (landing sections, feature components)
-    ↓ imported by
-Layer 3: Page orchestrators (compose sections into full pages)
-    ↓ wrapped with
-Layer 4: Error boundaries + loading states (per-section isolation)
-    ↓ rendered by
-Layer 5: Server page wrappers (page.tsx — SEO, data, layout)
-```
+The frontend architecture is a **3D model with ten layers across five axes**. Each component in `components.architecture_layer` (1-10) and `components.layer` (sub-label) sits at exactly one position. Issue #46 tracks moving this mapping into first-class Supabase tables (`architecture_frontend_layers`, `architecture_frontend_axes`); until then the mapping is also enumerated in `get_layer_counts()`.
+
+| #   | sub_label       | Axis          | Covenant                                                 |
+| --- | --------------- | ------------- | -------------------------------------------------------- |
+| 1   | `tokens`        | Y-axis        | Design decisions are data, not code.                     |
+| 2   | `primitive`     | X-axis        | A primitive does one thing well.                         |
+| 3   | `brand`         | X-axis        | A brand component is a primitive with Ubuntu in it.      |
+| 4   | `safety`        | Y-axis        | Nothing harmful reaches the user.                        |
+| 5   | `resilience`    | Y-axis        | Failure in one part never breaks the whole.              |
+| 6   | `pages`         | X-axis        | A page is a composition, not an implementation.          |
+| 7   | `shell`         | X-axis        | The shell holds the product.                             |
+| 8   | `assurance`     | Z-axis        | What breaks is seen before users feel it.                |
+| 9   | `fundi`         | Outside       | Failure is a learning event, not a user-facing incident. |
+| 10  | `documentation` | Documentation | The system documents itself.                             |
+
+**Axis meanings:** X = horizontal composition flow (primitives → brand → pages → shell, what the user sees); Y = vertical infrastructure (tokens, safety, resilience threading through every X-layer); Z = depth observation (assurance watching X and Y without being inside anything); Outside = actors beyond the build (fundi heals autonomously); Documentation = the system describing itself.
 
 **Rules:**
 
-- Components import from the layer below, never sideways or upward
+- Components import from the layer below on the same axis — never sideways or upward
 - Each component is a standalone file
-- Page orchestrators NEVER hardcode rendering logic — they compose imported components
+- L6 pages NEVER hardcode buttons/cards/SVGs — pure composition of L2/L3
+- L1 is the only layer allowed to define CSS values — every other layer consumes via `var()`
+- L3 always destructures `{ log, motion, LiveRegion }` from `useNyuchiHarness`; L2 never imports it
 - All colors and styles come from CSS custom properties in `globals.css`
+- This 3D frontend model is **distinct** from the 7-layer data architecture at `/architecture` (Pod → Relational → Document → Orchestration → Edge → Device → Open Data). Never conflate the two numberings — a component can sit at frontend L3 and read from data L2 without contradiction.
 
 ### 6.3 Component Patterns
 
@@ -836,7 +844,7 @@ When working on this codebase as an AI assistant:
 6. **Keep components self-contained** — each file is independently installable via the registry.
 7. **Preserve accessibility** — APCA 3.0 AAA contrast, 56px default / 48px minimum touch targets, Radix primitives for keyboard/screen reader behaviour.
 8. **Test API output** — after modifying a component, verify it serves correctly via `/api/v1/ui/[name]`.
-9. **Respect the layered architecture** — primitives don't import page-level code; the 3D model has X-axis (L2→L3→L6→L7), Y-axis (L1, L4, L5), Z-axis (L8), Outside (L9), Meta (L10).
+9. **Respect the layered architecture** — primitives don't import page-level code. The 3D frontend model has five axes: X-axis (L2 primitives / L3 brand / L6 pages / L7 shell — horizontal composition), Y-axis (L1 tokens / L4 safety / L5 resilience — vertical infrastructure), Z-axis (L8 assurance — depth observation), Outside (L9 fundi — self-healing actors), Documentation (L10). This is distinct from the 7-layer data architecture served at `/architecture` — never conflate the two numberings. See issue #46 for the table-backed doctrine (`architecture_frontend_layers`, `architecture_frontend_axes`).
 10. **All brand wordmarks lowercase** — `mukoko`, `nyuchi`, `shamwari`, `bundu`, `nhimbe`.
 11. **This is the canonical design system** — changes here propagate to all bundu ecosystem apps.
 12. **Run tests before committing** — `pnpm test` must pass; add tests for new behaviour, especially around API routes and DB-driven renderers.

@@ -168,10 +168,10 @@ export { MyComponent, myComponentVariants }
 
 3. **Upsert the component** into Supabase (`components` table). The portal serves it from the DB on the next request — no rebuild required.
 
-4. **Run the static registry build**:
+4. **Sync the registry snapshot** (regenerates `registry.json` + any committed portal primitives from Supabase; CI fails on drift via `pnpm registry:verify`):
 
 ```bash
-pnpm registry:build
+pnpm registry:sync
 ```
 
 5. **Add tests** in `__tests__/components/`:

@@ -6,6 +6,21 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Docs
+
+- **Rewrote `CLAUDE.md`** to match the post-v4.0.26 Supabase-first state (issue #30). Supabase is now documented as the single source of truth for components, docs, brand, architecture, AI instructions, changelog, and fundi; `registry.json` is described as a generated snapshot produced by `pnpm registry:sync` and verified in CI by `pnpm registry:verify`. Directory tree, API table, MCP tools list (18), and pre-commit gates all refreshed. Covered the new `/api/v1/{docs,changelog,fundi,search,ai/instructions,ui/[name]/docs,ui/[name]/versions}` endpoints and the `mukoko://ubuntu` resource.
+- **Corrected the 3D frontend architecture description** in `CLAUDE.md` and `public/llms.txt` to match `get_layer_counts()` (issue #46): ten layers across **five** axes — X (L2/L3/L6/L7 composition), Y (L1 tokens / L4 safety / L5 resilience), Z (L8 assurance), Outside (L9 fundi), Documentation (L10). The previous "Outside = docs" / "Meta = templates" wording was wrong.
+- **`README.md`:** fixed the MCP config example (`nyuchi-design-portal`, matching `.claude/settings.json`), expanded the tool table to all 18 MCP tools, and refreshed the `/api/v1/` endpoint table.
+- **`CONTRIBUTING.md`, `.claude/skills/*`, `.github/pull_request_template.md`:** replaced `registry:build` references with the correct `registry:sync` / `registry:verify` flow and the Supabase-first component authoring steps.
+
+### Security
+
+- Added `pnpm.overrides` for `hono` (→^4.12.14), `dompurify` (→^3.4.0), and `sanitize-html` (→^2.17.3) to clear three moderate CVEs that were blocking the Security Audit CI job and the local pre-commit `pnpm audit` gate. `pnpm audit --audit-level=moderate` now returns clean.
+
+### Changed
+
+- Applied latest patch/minor dependency upgrades per the upgrade-first policy: `next` 16.2.3 → 16.2.4, `typescript` 6.0.2 → 6.0.3, `vitest` 4.1.4 → 4.1.5, `tailwindcss` 4.2.2 → 4.2.4, `@supabase/supabase-js` 2.103.0 → 2.104.0, `@base-ui/react` 1.3.0 → 1.4.1, `typescript-eslint` 8.58.2 → 8.59.0, `pagefind` 1.5.0 → 1.5.2, plus prettier, eslint, postcss, autoprefixer, react-hook-form, shadcn CLI. `vite` / `@vitejs/plugin-react` remain pinned pending vitest@5.
+
 ## [4.0.26] - 2026-04-14
 
 ### Added

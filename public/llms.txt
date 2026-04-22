@@ -13,7 +13,7 @@ The Nyuchi Design Portal is:
 1. A **component registry** — 545 stable items across 10 architecture layers, installable via `npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/<name>`
 2. A **design system reference** — Five African Minerals palette, typography, spacing, and radius tokens served from the `nyuchi-tokens` component
 3. A **brand documentation hub** — canonical brand specs for bundu, nyuchi, mukoko, shamwari, nhimbe
-4. An **architecture documentation hub** — 3D model (X-axis L2→L3→L6→L7, Y-axis L1/L4/L5, Z-axis L8, Outside L9, Docs L10), local-first data strategy, sovereignty assessments, open data pipeline
+4. An **architecture documentation hub** — 3D frontend model with 10 layers across 5 axes (X L2/L3/L6/L7 composition, Y L1/L4/L5 infrastructure, Z L8 assurance, Outside L9 fundi, Documentation L10), local-first data strategy, sovereignty assessments, open data pipeline
 5. A **self-healing system** — Fundi component reports L8 runtime issues as Supabase records and, optionally, as GitHub issues
 6. An **MCP server** — AI assistants can connect at `https://design.nyuchi.com/mcp` for registry data, design tokens, docs, changelog, and architecture
 

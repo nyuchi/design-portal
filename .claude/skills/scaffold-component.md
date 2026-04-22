@@ -55,13 +55,13 @@ Open `registry.json` and add the registry entry to the `items` array. Schema:
 
 Common `registryDependencies`: if your component uses `Button`, add `"button"`. If it uses `Badge`, add `"badge"`. These are the registry item names, not npm packages.
 
-### Step 4 — Regenerate static files
+### Step 4 — Sync the registry snapshot
 
 ```bash
-pnpm registry:build
+pnpm registry:sync
 ```
 
-This writes `public/r/<name>.json` for CDN serving.
+This regenerates `registry.json` (and any committed `components/ui/*` primitive the portal itself imports) from Supabase. The dynamic API at `/api/v1/ui/<name>` reads straight from Supabase — no static CDN build required. CI runs `pnpm registry:verify` to fail if the committed snapshot drifts from the database.
 
 ### Step 5 — Verify the API
 
