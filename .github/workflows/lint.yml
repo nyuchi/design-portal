@@ -17,14 +17,13 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      # raven-actions/actionlint is the upstream-recommended wrapper
-      # (see https://github.com/rhysd/actionlint#on-github-actions).
-      # It installs the pinned binary, runs it against every workflow
-      # under .github/workflows, and fails the job on any finding.
+      # Go is preinstalled on ubuntu-latest runners. Install and run the
+      # upstream actionlint binary directly — no third-party action, no
+      # install-script process-substitution that can misbehave on the runner.
+      - name: Install actionlint
+        run: go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
       - name: Run actionlint
-        uses: raven-actions/actionlint@v2
-        with:
-          files: ".github/workflows/*.yml"
+        run: actionlint -color
 
   json-validity:
     name: JSON validity
