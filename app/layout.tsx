@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Serif, JetBrains_Mono } from "next/font/google"
-import { Footer, Layout, Navbar } from "nextra-theme-docs"
+import { Footer, Layout } from "nextra-theme-docs"
 import { Head } from "nextra/components"
 import { getPageMap } from "nextra/page-map"
 import "nextra-theme-docs/style.css"
 import "./globals.css"
-import { NyuchiLogo } from "@/components/layout/nyuchi-logo"
 import { MineralStrip } from "@/components/layout/mineral-strip"
+import { Header } from "@/components/landing/header"
 import { Footer as CustomFooter } from "@/components/landing/footer"
 
 const fontSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" })
@@ -94,14 +94,10 @@ export const viewport: Viewport = {
   ],
 }
 
-const navbar = (
-  <Navbar
-    // Full left-side brand lockup — icon + "nyuchi design" wordmark, both
-    // clickable (Nextra auto-links the whole `logo` slot to `/`).
-    logo={<NyuchiLogo size={24} showWordmark suffix="design" />}
-    projectLink="https://github.com/nyuchitech/design-portal"
-  />
-)
+// Custom header replaces Nextra's <Navbar>. Layout is identical at every
+// breakpoint: logo + wordmark, 4 nav items (desktop only), 3-icon pill group
+// (always visible). See `components/landing/header.tsx`.
+const navbar = <Header />
 
 const footer = (
   <Footer>
@@ -171,7 +167,11 @@ export default async function RootLayout({
         />
       </Head>
       <body className="font-sans antialiased">
-        <MineralStrip className="fixed inset-y-0 left-0 z-50 h-screen rounded-none" />
+        {/* Mineral strip is a 4px fixed-position accent on the far left of
+            every viewport. We compensate inside the layout wrapper so content
+            never overlaps it — and inside so scrollbars on narrow mobile
+            viewports don't create a double-border effect. */}
+        <MineralStrip className="fixed inset-y-0 left-0 z-[60] h-screen rounded-none" />
         <div className="pl-1">
           <Layout
             navbar={navbar}
