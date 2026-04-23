@@ -18,6 +18,10 @@ pnpm-lock.yaml
 # Environment files
 .env*
 
+# Local Claude Code permission allowlists — per-developer, not part of
+# the shared config. Committed template is `.claude/settings.json`.
+.claude/settings.local.json
+
 # Supabase
 supabase/
 

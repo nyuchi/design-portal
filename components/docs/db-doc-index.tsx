@@ -39,7 +39,9 @@ export async function DbDocIndex({
 
   const categories = Array.from(byCategory.entries()).map(([category, rows]) => ({
     category,
-    rows: [...rows].sort((a, b) => a.sort_order - b.sort_order),
+    // `sort_order` is nullable in the live schema; treat null as +∞ so
+    // rows with an explicit order appear before unordered ones.
+    rows: [...rows].sort((a, b) => (a.sort_order ?? Infinity) - (b.sort_order ?? Infinity)),
   }))
 
   return (

@@ -493,24 +493,36 @@ export interface DocumentationPageRow {
   slug: string
   title: string
   category: string
+  subcategory: string | null
   description: string | null
-  body: string
-  sort_order: number
-  status: string
-  metadata: Record<string, unknown> | null
-  created_at: string
-  updated_at: string
+  content: string
+  author: string | null
+  version: string | null
+  related_layers: number[] | null
+  related_components: string[] | null
+  keywords: string[] | null
+  sort_order: number | null
+  parent_slug: string | null
+  status: string | null
+  created_at: string | null
+  updated_at: string | null
 }
 
 export interface DocumentationPageInsert {
   slug: string
   title: string
   category: string
+  subcategory?: string | null
   description?: string | null
-  body: string
-  sort_order?: number
-  status?: string
-  metadata?: Record<string, unknown> | null
+  content: string
+  author?: string | null
+  version?: string | null
+  related_layers?: number[] | null
+  related_components?: string[] | null
+  keywords?: string[] | null
+  sort_order?: number | null
+  parent_slug?: string | null
+  status?: string | null
 }
 
 // ── Changelog table types ───────────────────────────────────────────

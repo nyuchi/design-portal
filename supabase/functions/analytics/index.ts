@@ -22,7 +22,11 @@
 //       "duration_ms": 42,
 //       "status_code": 200,             // for api_call
 //       "is_error": false,              // derived if omitted
-//       "source": "design-portal" | "mukoko-weather" | ...
+//       // Note: the live `usage_events` schema has no `source` column.
+//       //       Extra fields in the body are accepted but dropped at
+//       //       insert time. If per-ecosystem attribution becomes a
+//       //       requirement, add a `source` column via a migration
+//       //       first, then restore it here.
 //     }
 //   Body (batch): { "events": [ ... ] }
 //
@@ -65,7 +69,6 @@ interface UsageEvent {
   duration_ms?: number | null
   status_code?: number | null
   is_error?: boolean | null
-  source?: string | null
 }
 
 function validateEvent(e: unknown): UsageEvent | string {
@@ -88,6 +91,16 @@ function validateEvent(e: unknown): UsageEvent | string {
     return "status_code must be a number"
   }
 
+  // `is_error` is NOT NULL in the live `usage_events` schema — always
+  // emit a concrete boolean. Derive from status_code when possible,
+  // otherwise default to false.
+  const isError =
+    typeof ev.is_error === "boolean"
+      ? ev.is_error
+      : typeof ev.status_code === "number"
+        ? ev.status_code >= 400
+        : false
+
   const normalised: UsageEvent = {
     event_type: ev.event_type,
     endpoint: typeof ev.endpoint === "string" ? ev.endpoint : undefined,
@@ -95,13 +108,7 @@ function validateEvent(e: unknown): UsageEvent | string {
     component_name: typeof ev.component_name === "string" ? ev.component_name : null,
     duration_ms: typeof ev.duration_ms === "number" ? ev.duration_ms : null,
     status_code: typeof ev.status_code === "number" ? ev.status_code : null,
-    is_error:
-      typeof ev.is_error === "boolean"
-        ? ev.is_error
-        : typeof ev.status_code === "number"
-          ? ev.status_code >= 400
-          : null,
-    source: typeof ev.source === "string" ? ev.source : "design-portal",
+    is_error: isError,
   }
   return normalised
 }

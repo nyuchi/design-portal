@@ -17,52 +17,36 @@ Project ref: `grjsboqkaywpwatvrzmy` (`nyuchi_design_db`, region `ap-southeast-1`
 
 ## Required database tables
 
-Both tables are already created by prior migrations (see `components.architecture_layer = 8/9` rows in `architecture_frontend_layers` once FRD-10 / #46 lands). If you need to recreate them:
+All three tables already exist in the production Supabase project
+(`grjsboqkaywpwatvrzmy`). These functions align to the live schema,
+not to a new one. The authoritative columns are:
 
-```sql
-create table public.usage_events (
-  id              bigint generated always as identity primary key,
-  event_type      text not null check (event_type in ('api_call', 'mcp_tool')),
-  endpoint        text,
-  tool_name       text,
-  component_name  text,
-  duration_ms     integer,
-  status_code     integer,
-  is_error        boolean,
-  source          text default 'design-portal',
-  created_at      timestamptz not null default now()
-);
-create index on public.usage_events (created_at desc);
-create index on public.usage_events (event_type, created_at desc);
+```text
+usage_events
+  id, event_type, endpoint, tool_name, component_name,
+  duration_ms, status_code, is_error (NOT NULL), created_at
 
-create table public.fundi_issues (
-  id                   bigint generated always as identity primary key,
-  scope                text not null,
-  severity             text not null check (severity in ('critical','high','medium','low')),
-  symptom              text not null,
-  context              jsonb,
-  fingerprint          text,
-  source               text default 'design-portal',
-  status               text not null default 'open' check (status in ('open','in_progress','resolved','wontfix')),
-  github_issue_number  integer,
-  created_at           timestamptz not null default now(),
-  updated_at           timestamptz not null default now()
-);
-create unique index fundi_issues_open_fingerprint
-  on public.fundi_issues (fingerprint)
-  where status in ('open', 'in_progress');
+fundi_issues
+  id, component_name (NOT NULL), severity (NOT NULL),
+  error_type (NOT NULL), diagnostic_source (NOT NULL),
+  architecture_layer, blast_radius, diagnostic_payload (jsonb),
+  healing_plan, actions_taken, auto_fixable, requires_human,
+  portal_url, status (NOT NULL, default 'open'),
+  github_issue_number, github_issue_url,
+  resolution, resolved_by, resolved_at, root_cause,
+  prevented_recurrence, created_at, updated_at
 
-create table public.fundi_healing_log (
-  id          bigint generated always as identity primary key,
-  issue_id    bigint not null references public.fundi_issues(id) on delete cascade,
-  action      text   not null,
-  payload     jsonb,
-  created_at  timestamptz not null default now()
-);
-create index on public.fundi_healing_log (issue_id, created_at desc);
+fundi_healing_log
+  id, issue_id, action_type (NOT NULL), action_payload (jsonb),
+  success, error, executed_at, approved_by, duration_ms
 ```
 
-The edge functions expect these exact column names.
+If those tables ever need to be recreated, use `supabase db pull`
+from the live project — do NOT hand-author a schema here (the one
+committed previously drifted from live, which broke the edge
+functions). The fundi edge function deduplicates new reports by the
+tuple `(component_name, error_type, severity)` rather than a stored
+fingerprint, so no unique-index changes are required.
 
 ## Secrets
 
@@ -86,9 +70,12 @@ The PAT must be able to create issues and add labels on that repo.
 
 - `POST /functions/v1/fundi` — **unauthenticated by design.** L8
   assurance callsites anywhere in the ecosystem can report. The L8
-  client library, not this endpoint, decides whether to send. Validation
-  here enforces a strict scope/severity/symptom shape and fingerprint
-  dedup limits row growth.
+  client library, not this endpoint, decides whether to send.
+  Validation here matches the live `fundi_issues` schema
+  (`component_name`, `severity`, `error_type`, `diagnostic_source`
+  all required); dedup by the natural-key tuple
+  `(component_name, error_type, severity)` across rows in
+  `status IN ('open','in_progress')` limits row growth.
 - `POST /functions/v1/fundi/heal` — **requires a Bearer token** matching
   either `SUPABASE_SERVICE_ROLE_KEY` (auto-injected; what the documented
   pg_cron schedule uses) or `FUNDI_HEAL_TOKEN` if set. Returns 401
@@ -170,10 +157,20 @@ curl -sS -X POST 'https://grjsboqkaywpwatvrzmy.supabase.co/functions/v1/analytic
   -H 'Content-Type: application/json' \
   -d '{"event_type":"api_call","endpoint":"/api/v1/ui","duration_ms":42,"status_code":200}'
 
-# Fundi — report an issue
+# Fundi — report an issue. Body matches the live fundi_issues schema
+# exactly (component_name / severity / error_type / diagnostic_source
+# all required).
 curl -sS -X POST 'https://grjsboqkaywpwatvrzmy.supabase.co/functions/v1/fundi' \
   -H 'Content-Type: application/json' \
-  -d '{"scope":"registry","severity":"medium","symptom":"registry.json drifted","context":{"expected":545,"actual":540}}'
+  -d '{
+    "component_name": "button",
+    "severity": "high",
+    "error_type": "hydration-mismatch",
+    "diagnostic_source": "l8-assurance",
+    "architecture_layer": 2,
+    "blast_radius": "single-component",
+    "diagnostic_payload": { "expected": "button", "received": "div" }
+  }'
 
 # Fundi — manually trigger a heal pass (requires auth, see "Auth model" above)
 curl -sS -X POST 'https://grjsboqkaywpwatvrzmy.supabase.co/functions/v1/fundi/heal' \
