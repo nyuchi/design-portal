@@ -60,7 +60,7 @@ describe("Architecture API v1 Routes", () => {
       const filePath = path.join(process.cwd(), "openapi.yaml")
       const content = fs.readFileSync(filePath, "utf-8")
       expect(content).toContain('openapi: "3.1.0"')
-      expect(content).toContain("Nyuchi Design API")
+      expect(content).toContain("Nyuchi Architecture API")
     })
   })
 })

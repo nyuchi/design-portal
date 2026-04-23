@@ -1,12 +1,12 @@
 openapi: "3.1.0"
 info:
-  title: Nyuchi Design API
+  title: Nyuchi Architecture API
   version: "1.0.0"
   description: |
     Unified API for the Nyuchi Design Portal — components, brand, architecture, Ubuntu doctrine,
     3D frontend model, and design system. Canonical registry for the bundu ecosystem.
 
-    The Nyuchi Design API follows resource-oriented design principles. All resources
+    The Nyuchi Architecture API follows resource-oriented design principles. All resources
     are served as JSON with schema.org JSON-LD metadata, CORS headers, and CDN-friendly caching.
 
     All data routes read from Supabase. If the database is not configured, endpoints return
@@ -904,7 +904,7 @@ components:
           const: "WebAPI"
         name:
           type: string
-          example: "Nyuchi Design API"
+          example: "Nyuchi Architecture API"
         version:
           type: string
           example: "1.0.0"

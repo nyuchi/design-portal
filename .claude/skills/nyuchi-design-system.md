@@ -68,9 +68,9 @@ npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/<name>
 
 Connect an MCP client to `https://design.nyuchi.com/mcp`.
 
-**Tools** (22; always up-to-date via `list_tools`): `list_components`, `get_component`, `get_component_docs`, `get_component_links`, `get_component_versions`, `search_components`, `get_design_tokens`, `scaffold_component`, `get_install_command`, `get_brand_info`, `get_architecture_info`, `get_architecture_frontend`, `get_ubuntu_doctrine`, `get_ubuntu_pillars`, `get_ubuntu_principles`, `get_database_status`, `get_usage_stats`, `get_layer_summary`, `get_ai_instructions`, `get_changelog`, `get_documentation_page`.
+**Tools** — always fetch live via `list_tools`; the inventory grows with the ecosystem. Current set includes: `list_components`, `get_component`, `get_component_docs`, `get_component_links`, `get_component_versions`, `search_components`, `get_design_tokens`, `scaffold_component`, `get_install_command`, `get_brand_info`, `get_architecture_info`, `get_architecture_frontend`, `get_ubuntu_doctrine`, `get_ubuntu_pillars`, `get_ubuntu_principles`, `get_database_status`, `get_usage_stats`, `get_layer_summary`, `get_ai_instructions`, `get_changelog`, `get_documentation_page`.
 
-**Resources** (5): `mukoko://registry`, `mukoko://brand`, `mukoko://design-tokens`, `mukoko://architecture`, `mukoko://ubuntu`.
+**Resources** — always fetch live via `list_resources`. Current set includes: `mukoko://registry`, `mukoko://brand`, `mukoko://design-tokens`, `mukoko://architecture`, `mukoko://ubuntu`.
 
 **System prompt** loads at startup from `ai_instructions` (`name='nyuchi-mcp-system-prompt'`) with a 60s TTL cache. To change the prompt, edit the Supabase row; no code deploy needed.
 

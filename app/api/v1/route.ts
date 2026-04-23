@@ -26,7 +26,7 @@ export async function GET() {
         $schema: "https://design.nyuchi.com/schema/api.json",
         "@context": "https://schema.org",
         "@type": "WebAPI",
-        name: "Nyuchi Design API",
+        name: "Nyuchi Architecture API",
         version: "1.0.0",
         description:
           "Unified API for the Nyuchi Design Portal — components, brand, architecture, and design system. Canonical registry for the bundu ecosystem.",

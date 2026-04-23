@@ -52,7 +52,7 @@ Add to your `.claude/settings.json`:
 }
 ```
 
-Your AI assistant can now call 22 tools:
+Your AI assistant can now call the full tool surface — live at `https://design.nyuchi.com/mcp` via `tools/list`:
 
 | Tool                        | What it does                                                                 |
 | --------------------------- | ---------------------------------------------------------------------------- |

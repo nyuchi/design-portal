@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Check, Copy, Bot, Zap, BarChart2, Terminal } from "lucide-react"
+import { LiveMcpStats } from "@/components/live-mcp-stats"
 
 function CopySnippet({ code, label }: { code: string; label: string }) {
   const [copied, setCopied] = useState(false)
@@ -73,7 +74,9 @@ export function AiNativeSection() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-foreground">MCP Server</h3>
-                <p className="text-xs text-muted-foreground">Streamable HTTP · 22 tools</p>
+                <p className="text-xs text-muted-foreground">
+                  Streamable HTTP · <LiveMcpStats format="tools" />
+                </p>
               </div>
             </div>
             <p className="text-xs leading-relaxed text-muted-foreground">
