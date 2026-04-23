@@ -54,6 +54,18 @@ export function Header() {
             Brand
           </a>
           <a
+            href="/architecture"
+            className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            Architecture
+          </a>
+          <a
+            href="/observability"
+            className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            Observability
+          </a>
+          <a
             href="/docs"
             className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >

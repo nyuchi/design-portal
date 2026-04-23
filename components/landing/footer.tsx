@@ -48,8 +48,8 @@ const columns: FooterColumn[] = [
     links: [
       { label: "Brand", href: "/brand" },
       { label: "Foundations", href: "/foundations" },
-      { label: "Semantic Tokens", href: "/design/tokens" },
-      { label: "Icons", href: "/design/icons" },
+      { label: "Design Tokens", href: "/foundations/tokens" },
+      { label: "Icons", href: "/foundations/icons" },
       { label: "Accessibility", href: "/foundations/accessibility" },
       { label: "Typography", href: "/foundations/typography" },
     ],

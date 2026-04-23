@@ -1,6 +1,8 @@
 import Link from "next/link"
+import { Suspense } from "react"
 import { ArrowRight } from "lucide-react"
 import { ArchitectureExplorer } from "@/components/landing/architecture-explorer"
+import { Skeleton } from "@/components/ui/skeleton"
 
 /**
  * "Resilient by design" — explains the two outliers of the 3D frontend
@@ -42,7 +44,11 @@ export async function ResilientBySection() {
 
         {/* Interactive 3D explorer — five axes + ten layer nodes, click to inspect */}
         <div className="mb-10">
-          <ArchitectureExplorer />
+          <Suspense
+            fallback={<Skeleton className="h-[420px] w-full rounded-xl border border-border" />}
+          >
+            <ArchitectureExplorer />
+          </Suspense>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">

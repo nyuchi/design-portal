@@ -1335,301 +1335,40 @@ export async function getComponentLinks(name: string): Promise<ComponentLink[]> 
 // ── 3D Frontend Architecture — issue #46 (`architecture_frontend_*`) ──
 //
 // The `architecture_frontend_layers` (10 rows) and `architecture_frontend_axes`
-// (5 rows) tables are tracked in issue #46. Until that migration ships,
-// these fetchers transparently fall back to the canonical hardcoded
-// dataset that mirrors the seed data #46 will load. Consumers (e.g. the
-// landing-page Three.js architecture explorer) call these without caring
-// whether the data is live or fallback. Once the tables are populated
-// the fallback never executes.
-
-const FALLBACK_AXES: ArchitectureFrontendAxisRow[] = [
-  {
-    id: 1,
-    name: "X-axis",
-    title: "Horizontal Composition Flow",
-    description:
-      "The build axis. Primitives compose into brand components, brand into pages, pages into the shell. What the user sees.",
-    geometry: "horizontal",
-    metaphor: "Left-to-right assembly: small parts become bigger parts become the whole product.",
-    sort_order: 1,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 2,
-    name: "Y-axis",
-    title: "Vertical Infrastructure",
-    description:
-      "The plumbing axis. Tokens, safety, and resilience flow through every X-axis layer like wiring through every room of a house.",
-    geometry: "vertical",
-    metaphor:
-      "Foundations up: design decisions, safety gates, and resilience patterns thread through every visible layer.",
-    sort_order: 2,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 3,
-    name: "Z-axis",
-    title: "Depth Observation",
-    description:
-      "The watching axis. Assurance observes everything on X and Y without being inside anything.",
-    geometry: "depth",
-    metaphor:
-      "From above the build: telemetry and assertions watch the running system without intruding.",
-    sort_order: 3,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 4,
-    name: "Outside",
-    title: "Outside Actors",
-    description: "Beyond the build. Fundi acts on the system autonomously — heals what L8 finds.",
-    geometry: "external",
-    metaphor: "An artisan who lives outside the workshop and shows up to repair what's broken.",
-    sort_order: 4,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 5,
-    name: "Documentation",
-    title: "Documentation",
-    description:
-      "The system describing itself. Docs engine, AI context, changelog renderer, public docs API.",
-    geometry: "external",
-    metaphor: "A mirror the system holds up to itself so the truth never lives outside the source.",
-    sort_order: 5,
-    created_at: "",
-    updated_at: "",
-  },
-]
-
-const FALLBACK_LAYERS: ArchitectureFrontendLayerRow[] = [
-  {
-    id: 1,
-    layer_number: 1,
-    sub_label: "tokens",
-    title: "Design Tokens",
-    axis_name: "Y-axis",
-    role: "The CSS-variable source for every other layer.",
-    description:
-      "Five African Minerals palette, semantic colors, typography, spacing, radii — all defined exactly once as CSS custom properties.",
-    covenant: "Design decisions are data, not code.",
-    stakeholder: "Design + Brand",
-    implementation_rules: ["CSS values live only here — every other layer consumes via var()"],
-    sort_order: 1,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 2,
-    layer_number: 2,
-    sub_label: "primitive",
-    title: "Primitives",
-    axis_name: "X-axis",
-    role: "Single-purpose UI atoms. Buttons, inputs, badges, separators.",
-    description:
-      "CVA + Radix + cn() pattern, no business logic, no harness imports. Anything composable starts here.",
-    covenant: "A primitive does one thing well.",
-    stakeholder: "Component authors",
-    implementation_rules: [
-      "Never imports useNyuchiHarness",
-      "Uses cn() for classNames",
-      "Carries data-slot",
-    ],
-    sort_order: 2,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 3,
-    layer_number: 3,
-    sub_label: "brand",
-    title: "Brand",
-    axis_name: "X-axis",
-    role: "Primitives plus Ubuntu — wordmark, mineral strip, ecosystem motifs.",
-    description:
-      "Brand components wrap primitives with the harness, the live region, and the motion system. They carry the doctrine.",
-    covenant: "A brand component is a primitive with Ubuntu in it.",
-    stakeholder: "Brand designers",
-    implementation_rules: [
-      "Always destructures { log, motion, LiveRegion } from useNyuchiHarness",
-      "Always uses the nyuchi- prefix in component name",
-    ],
-    sort_order: 3,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 4,
-    layer_number: 4,
-    sub_label: "safety",
-    title: "Safety",
-    axis_name: "Y-axis",
-    role: "Render-time gates. Permission checks, content-safety, AI guards.",
-    description:
-      "Anything that decides whether the children below it should ever render. Threads through every X-axis layer.",
-    covenant: "Nothing harmful reaches the user.",
-    stakeholder: "Trust + Safety",
-    implementation_rules: [
-      "Gates render before children execute",
-      "Never silently allows — always explicit deny or permit",
-    ],
-    sort_order: 4,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 5,
-    layer_number: 5,
-    sub_label: "resilience",
-    title: "Resilience",
-    axis_name: "Y-axis",
-    role: "Error boundaries, fallbacks, retry, circuit-breakers.",
-    description:
-      "Catches failures and renders something graceful so one part going down never takes the whole tree with it.",
-    covenant: "Failure in one part never breaks the whole.",
-    stakeholder: "SRE",
-    implementation_rules: [
-      "Boundaries catch, log, and render fallback",
-      "Never swallow errors silently",
-    ],
-    sort_order: 5,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 6,
-    layer_number: 6,
-    sub_label: "pages",
-    title: "Pages",
-    axis_name: "X-axis",
-    role: "Pure composition of L2 + L3 + Y-axis cross-cuts.",
-    description:
-      "Pages don't draw — they arrange. No inline buttons, no hardcoded SVGs, no per-page colour values.",
-    covenant: "A page is a composition, not an implementation.",
-    stakeholder: "Product engineering",
-    implementation_rules: [
-      "Pure composition — no inline buttons, cards, SVGs, or brand fonts",
-      "Uses semantic CSS vars only",
-    ],
-    sort_order: 6,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 7,
-    layer_number: 7,
-    sub_label: "shell",
-    title: "Shell",
-    axis_name: "X-axis",
-    role: "App-level providers, navigation chrome, route boundaries.",
-    description:
-      "The single mount point that holds theme, auth, telemetry, and any other global concern.",
-    covenant: "The shell holds the product.",
-    stakeholder: "App engineering",
-    implementation_rules: ["Global providers live here", "Shell is mounted once per app"],
-    sort_order: 7,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 8,
-    layer_number: 8,
-    sub_label: "assurance",
-    title: "Assurance",
-    axis_name: "Z-axis",
-    role: "Telemetry, runtime invariants, fundi report sources.",
-    description:
-      "Watches X and Y from above. Emits structured events that fundi consumes; never modifies the tree it observes.",
-    covenant: "What breaks is seen before users feel it.",
-    stakeholder: "SRE + Observability",
-    implementation_rules: [
-      "Writes to observability_events and fundi_issues",
-      "Never stores PII",
-      "Rate-limited at the application layer",
-    ],
-    sort_order: 8,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 9,
-    layer_number: 9,
-    sub_label: "fundi",
-    title: "Fundi",
-    axis_name: "Outside",
-    role: "Self-healing actor. Promotes L8 reports into GitHub issues.",
-    description:
-      "Lives outside the build. Reads fundi_issues, deduplicates by fingerprint, opens labelled GH issues, writes an append-only healing log.",
-    covenant: "Failure is a learning event, not a user-facing incident.",
-    stakeholder: "Maintainers",
-    implementation_rules: [
-      "Opens GitHub issues for failures",
-      "Never auto-merges fixes without human review",
-      "Logs every healing action append-only",
-    ],
-    sort_order: 9,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: 10,
-    layer_number: 10,
-    sub_label: "documentation",
-    title: "Documentation",
-    axis_name: "Documentation",
-    role: "DB-driven docs, MCP context, AI instructions.",
-    description:
-      "The system documents itself. Every doc page, changelog entry, and AI instruction lives in Supabase and is served live.",
-    covenant: "The system documents itself.",
-    stakeholder: "DevRel + AI tooling",
-    implementation_rules: [
-      "Docs are generated from the database, not the filesystem",
-      "Every component has a data-portal attribute backlinking to its docs page",
-    ],
-    sort_order: 10,
-    created_at: "",
-    updated_at: "",
-  },
-]
+// (5 rows) tables are the source of truth for the 3D architecture explorer.
+// No in-code fallback dataset is kept — per doctrine, the DB is the only
+// source of truth and seeding happens out-of-band. Callers must tolerate
+// an empty array and render an empty state.
 
 /**
- * Live fetch with transitional fallback. Once issue #46's
- * `architecture_frontend_axes` table is seeded, the live path returns
- * the rows; until then, callers transparently get the canonical
- * fallback set above.
+ * Live fetch from `architecture_frontend_axes`. Returns an empty array if
+ * Supabase isn't configured or the table is empty — the DB is the single
+ * source of truth and callers must tolerate an empty response.
  */
 export async function getArchitectureFrontendAxes(): Promise<ArchitectureFrontendAxisRow[]> {
-  if (!isSupabaseConfigured()) return FALLBACK_AXES
+  if (!isSupabaseConfigured()) return []
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (getPublicClient() as any)
     .from("architecture_frontend_axes")
     .select("*")
     .order("sort_order", { ascending: true })
 
-  if (error || !Array.isArray(data) || data.length === 0) {
-    return FALLBACK_AXES
-  }
+  if (error || !Array.isArray(data)) return []
   return data as ArchitectureFrontendAxisRow[]
 }
 
 /**
- * Live fetch with transitional fallback. See getArchitectureFrontendAxes
- * for the migration story.
+ * Live fetch from `architecture_frontend_layers`. Returns an empty array
+ * if Supabase isn't configured or the table is empty.
  */
 export async function getArchitectureFrontendLayers(): Promise<ArchitectureFrontendLayerRow[]> {
-  if (!isSupabaseConfigured()) return FALLBACK_LAYERS
+  if (!isSupabaseConfigured()) return []
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (getPublicClient() as any)
     .from("architecture_frontend_layers")
     .select("*")
     .order("layer_number", { ascending: true })
 
-  if (error || !Array.isArray(data) || data.length === 0) {
-    return FALLBACK_LAYERS
-  }
+  if (error || !Array.isArray(data)) return []
   return data as ArchitectureFrontendLayerRow[]
 }
