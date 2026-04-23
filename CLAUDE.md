@@ -8,7 +8,7 @@
 
 ## 1. Project Identity
 
-**Nyuchi Design Portal** is the canonical design system, component registry, brand documentation hub, and developer portal for the bundu ecosystem. It serves 545 stable registry items across a 3D frontend architecture — **ten layers across five axes**: X-axis (horizontal composition — L2 primitives → L3 brand → L6 pages → L7 shell), Y-axis (vertical infrastructure — L1 tokens, L4 safety, L5 resilience), Z-axis (depth observation — L8 assurance), Outside (L9 fundi — self-healing actors), and Documentation (L10). Built on the **Five African Minerals** design system, installable via the shadcn CLI:
+**Nyuchi Design Portal** is the canonical design system, component registry, brand documentation hub, and developer portal for the bundu ecosystem. It serves the full stable registry across a 3D frontend architecture — **ten layers across five axes**: X-axis (horizontal composition — L2 primitives → L3 brand → L6 pages → L7 shell), Y-axis (vertical infrastructure — L1 tokens, L4 safety, L5 resilience), Z-axis (depth observation — L8 assurance), Outside (L9 fundi — self-healing actors), and Documentation (L10). Built on the **Five African Minerals** design system, installable via the shadcn CLI:
 
 ```
 npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/<component>
@@ -47,7 +47,7 @@ Nyuchi Design Portal exists within a broader ecosystem. Understanding the relati
 design-portal (this repo)
     │
     ├── Defines: Five African Minerals palette, typography, component API
-    ├── Serves: 545 stable registry items across 10 architecture layers via shadcn CLI / API
+    ├── Serves: the full stable registry across 10 architecture layers via shadcn CLI / API (live count: `GET /api/v1/stats`)
     │
     └── Consumed by:
         ├── mukoko-weather  (weather.mukoko.com)
@@ -209,7 +209,7 @@ design-portal/
 > Supabase `components` table. `registry.json` is a committed snapshot so PRs show
 > registry deltas clearly; `pnpm registry:verify` runs in CI to enforce the snapshot
 > stays in sync. Only the ~35 primitives the portal itself imports are written into
-> `components/ui/`; the remaining ~510 stable items are served only via `/api/v1/ui`.
+> `components/ui/`; the rest of the stable registry is served only via `/api/v1/ui` (live count from `GET /api/v1/stats`).
 
 ---
 
@@ -217,7 +217,7 @@ design-portal/
 
 ### 6.1 Registry System
 
-**Single source of truth: the Supabase `components` table** — 545 stable items across 10 architecture layers, with metadata, dependencies, source code, docs, and version history split across:
+**Single source of truth: the Supabase `components` table** — the stable registry across 10 architecture layers (live count: `GET /api/v1/stats` → `stable`), with metadata, dependencies, source code, docs, and version history split across:
 
 | Table                 | Purpose                                                                                 |
 | --------------------- | --------------------------------------------------------------------------------------- |
@@ -657,7 +657,7 @@ Configured in `.claude/settings.json`:
 
 ## 11. Component Categories
 
-The 545 stable registry items live in the Supabase `components` table and are organised across 10 architecture layers and by function. Counts/items below are a snapshot — query `GET /api/v1/stats` or the `get_layer_summary` MCP tool for live numbers. Only the ~35 portal primitives are committed to `components/ui/`; the rest are served only via `/api/v1/ui` and installed by consumer apps via the shadcn CLI.
+The stable registry items live in the Supabase `components` table and are organised across 10 architecture layers and by function. Counts/items below are a snapshot — **query `GET /api/v1/stats` or the `get_layer_summary` MCP tool for live numbers, and never hardcode a component count anywhere in the repo** (user-facing docs render the live value via `<LiveComponentCount />` from `components/live-component-count.tsx`). Only the ~35 portal primitives are committed to `components/ui/`; the rest are served only via `/api/v1/ui` and installed by consumer apps via the shadcn CLI.
 
 | Category                  | Count | Components                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
