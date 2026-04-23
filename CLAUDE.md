@@ -164,7 +164,7 @@ design-portal/
 │   ├── api-docs/, blocks/, charts/, components/, content/,
 │   ├── design/, docs/, foundations/, observability/, patterns/, registry/   # MDX doc routes
 ├── components/
-│   ├── docs/                         # DB-driven docs renderers (db-doc-page, db-changelog)
+│   ├── docs/                         # DB-driven docs renderers (DEPRECATED — see §15.18)
 │   ├── landing/                      # Landing sections (header, hero, footer, install-steps,
 │   │                                 #   ai-native-section, copy-command, explore-section,
 │   │                                 #   component-catalog, component-showcase)
@@ -219,17 +219,17 @@ design-portal/
 
 **Single source of truth: the Supabase `components` table** — the stable registry across 10 architecture layers (live count: `GET /api/v1/stats` → `stable`), with metadata, dependencies, source code, docs, and version history split across:
 
-| Table                 | Purpose                                                                                 |
-| --------------------- | --------------------------------------------------------------------------------------- |
-| `components`          | Name, type, description, deps, files, source_code, architecture_layer, category, status |
-| `component_docs`      | Use cases, variants, a11y notes (per component)                                         |
-| `component_versions`  | Per-component version history                                                           |
-| `documentation_pages` | Long-form MDX-equivalent docs (10 pages)                                                |
-| `changelog`           | Releases (currently 4.0.0 → 4.0.26)                                                     |
-| `ai_instructions`     | System prompts per target (mcp-server, claude, copilot)                                 |
-| `fundi_issues`        | Self-healing issue tracking                                                             |
-| `brand_*`             | Minerals, semantic colors, typography, spacing, ecosystem brands                        |
-| `architecture_*`      | Principles, data layer, pipeline, sovereignty assessments                               |
+| Table                 | Purpose                                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `components`          | Name, type, description, deps, files, source_code, architecture_layer, category, status                                |
+| `component_docs`      | Use cases, variants, a11y notes (per component)                                                                        |
+| `component_versions`  | Per-component version history                                                                                          |
+| `documentation_pages` | **DEPRECATED — see §15.18.** Long-form MDX-equivalent docs (10 pages). Rows will be migrated out to repo `.mdx` files. |
+| `changelog`           | Releases (currently 4.0.0 → 4.0.26)                                                                                    |
+| `ai_instructions`     | System prompts per target (mcp-server, claude, copilot)                                                                |
+| `fundi_issues`        | Self-healing issue tracking                                                                                            |
+| `brand_*`             | Minerals, semantic colors, typography, spacing, ecosystem brands                                                       |
+| `architecture_*`      | Principles, data layer, pipeline, sovereignty assessments                                                              |
 
 API responses follow the shadcn registry schema at `https://ui.shadcn.com/schema/registry.json`.
 
@@ -301,7 +301,7 @@ The frontend architecture is a **3D model with ten layers across five axes**. Ea
 | 7   | `shell`         | X-axis        | The shell holds the product.                             |
 | 8   | `assurance`     | Z-axis        | What breaks is seen before users feel it.                |
 | 9   | `fundi`         | Outside       | Failure is a learning event, not a user-facing incident. |
-| 10  | `documentation` | Documentation | The system documents itself.                             |
+| 10  | `documentation` | Documentation | The system documents itself in code — MDX in the repo.   |
 
 **Axis meanings:** X = horizontal composition flow (primitives → brand → pages → shell, what the user sees); Y = vertical infrastructure (tokens, safety, resilience threading through every X-layer); Z = depth observation (assurance watching X and Y without being inside anything); Outside = actors beyond the build (fundi heals autonomously); Documentation = the system describing itself.
 
@@ -590,8 +590,8 @@ All responses include schema.org JSON-LD metadata (`@context`, `@type`) where ap
 | `GET /api/v1/architecture/frontend/layers` | 10 layers of the 3D frontend architecture               | `architecture_frontend_layers` |
 | `GET /api/v1/ubuntu/pillars`               | 5 Ubuntu Pillars                                        | `ubuntu_pillars`               |
 | `GET /api/v1/ubuntu/principles`            | 5 Ubuntu Principles                                     | `ubuntu_principles`            |
-| `GET /api/v1/docs`                         | List documentation pages                                | `documentation_pages`          |
-| `GET /api/v1/docs/{slug}`                  | Single documentation page                               | `documentation_pages`          |
+| `GET /api/v1/docs`                         | List documentation pages (DEPRECATED — see §15.18)      | `documentation_pages`          |
+| `GET /api/v1/docs/{slug}`                  | Single documentation page (DEPRECATED — see §15.18)     | `documentation_pages`          |
 | `GET /api/v1/changelog`                    | All releases                                            | `changelog`                    |
 | `GET /api/v1/changelog/{version}`          | Single release                                          | `changelog`                    |
 | `GET /api/v1/ai/instructions`              | List AI instruction sets                                | `ai_instructions`              |
@@ -668,7 +668,7 @@ Configured in `.claude/settings.json`:
 | `get_layer_summary`         | Component count, categories, and names for a given architecture layer (1–10)                      |
 | `get_ai_instructions`       | Read system prompts from `ai_instructions` by target                                              |
 | `get_changelog`             | Recent releases from the `changelog` table                                                        |
-| `get_documentation_page`    | Read a documentation page by slug from `documentation_pages`                                      |
+| `get_documentation_page`    | Read a documentation page by slug from `documentation_pages` (DEPRECATED — see §15.18)            |
 
 ### Architecture
 
@@ -917,7 +917,7 @@ When working on this codebase as an AI assistant:
 15. **The mineral strip is always vertical** — used only as a left-edge accent (cards, sidebars, page borders); never horizontal.
 16. **Use the MCP server** — served at `/mcp` via `lib/mcp-server.ts`; all reads go through `lib/db/`.
 17. **Resilience patterns (circuit-breaker, retry, timeout, fallback-chain, ai-safety, chaos)** are registry items in Supabase, not files in this repo. Consumer apps install them via the shadcn CLI.
-18. **Pages that need long-form docs go in Supabase `documentation_pages`**, then are rendered through the `/docs/[slug]` dynamic route via `components/docs/db-doc-page.tsx`. Do not add new static MDX docs for content that should be editable in the DB.
+18. **Long-form documentation lives in the repo as `.mdx` files** — _not_ in Supabase. The portal is a documentation site, not a blog. Guides (`/docs/*`) and architecture/foundations/brand pages (`/architecture`, `/foundations`, `/brand`, …) are authored as `.mdx` in `app/` and compiled via `@next/mdx`. The `documentation_pages` Supabase table and `components/docs/db-doc-page.tsx` / `db-changelog.tsx` renderers are **deprecated** and will be removed in a follow-up PR that migrates the remaining rows into repo `.mdx` files. Do not add new rows to `documentation_pages`; author new docs as MDX.
 19. **The playground (`components/playground/`) reads from the API**, not from local files. If you find a `registry.json` import there, refactor it to fetch `/api/v1/ui` (tracked in issue #26).
 20. **API is versioned under `/api/v1/`** — `openapi.yaml` is the contract; update it whenever a route changes.
 21. **Buttons are always pill-shaped (`rounded-full`)** across the entire ecosystem.
