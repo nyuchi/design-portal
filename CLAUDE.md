@@ -763,9 +763,10 @@ Three workflows in `.github/workflows/`:
 **`claude-review.yml`** — AI code review on every PR and `@claude` mentions:
 
 - Triggers on PR open/sync, issue comments, review comments, and reviews
-- Uses `anthropics/claude-code-action@v1` with OAuth token
+- Uses `anthropics/claude-code-action@v1` preceded by an explicit `actions/checkout@v6` step with `fetch-depth: 0` (the action itself does not check out the repo — it expects a populated `.git` directory so it can `git fetch origin main` to build the review diff)
 - Reviews for: code quality, design system adherence, accessibility (APCA 3.0 AAA, 56px default / 48px minimum touch targets), security, registry compatibility
-- Secret required: `CLAUDE_CODE_OAUTH_TOKEN`
+- Permissions: `contents: write`, `pull-requests: write`, `issues: write`, `id-token: write`, `actions: read`
+- Secret required: `ANTHROPIC_API_KEY` (standard Anthropic API key for GitHub Actions. `CLAUDE_CODE_OAUTH_TOKEN` is the desktop-IDE credential and is not used here.)
 
 **`release.yml`** — Runs on version tags (`v*`):
 
