@@ -24,7 +24,7 @@ Use GitHub's private security advisory flow so we can investigate and ship a fix
 2. Fill in: a clear title, a description, steps to reproduce, affected version / endpoint, impact (confidentiality / integrity / availability), and any suggested mitigation
 3. Submit — the maintainers are notified privately
 
-If GitHub advisories are unavailable to you, email `security@nyuchi.africa` with the same information. PGP is not required.
+If GitHub advisories are unavailable to you, email `security@nyuchi.com` with the same information. PGP is not required.
 
 ### What to include
 
@@ -126,6 +126,6 @@ Per `CLAUDE.md` §15 rule 22, **security findings from any review/audit (`/secur
 ## Contact
 
 - Primary: GitHub security advisories — <https://github.com/nyuchitech/design-portal/security/advisories/new>
-- Fallback: `security@nyuchi.africa`
+- Fallback: `security@nyuchi.com`
 
 Thank you for helping keep the bundu ecosystem safe.

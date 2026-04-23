@@ -274,6 +274,16 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY  — public anon key (read-only via RLS)
 SUPABASE_SERVICE_ROLE_KEY      — write access; server-only, never expose
 ```
 
+**Stytch B2B (gates `/fundi/*` only — every other route is public):**
+
+```
+STYTCH_PROJECT_ID                — Stytch project ID (server-only)
+STYTCH_SECRET                    — Stytch project secret (server-only)
+NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN  — public token for the browser SDK
+```
+
+The fundi dashboard is the only authenticated surface in the portal. All registry, brand, MCP, and docs routes remain anon-readable. See `lib/stytch.ts`, `middleware.ts`, and `app/fundi/`. The unauthenticated `POST /api/v1/fundi` endpoint stays open by design — L8 callsites across the ecosystem report there without a session.
+
 ### 6.2 Layered Component Architecture
 
 Every component follows a layered pattern. This is mandatory for all bundu ecosystem apps consuming this registry.
