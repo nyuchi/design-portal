@@ -60,7 +60,7 @@ This policy covers anything the portal itself owns:
 - The brand + architecture APIs (`/api/v1/brand`, `/api/v1/ecosystem`, `/api/v1/data-layer`, `/api/v1/pipeline`, `/api/v1/sovereignty`)
 - The Model Context Protocol server at `/mcp` (Streamable HTTP)
 - Component source code served via the registry — an XSS or RCE-by-scaffold is in scope
-- Supabase row-level security policies shipping in `supabase/migrations/`
+- Supabase row-level security policies captured in `supabase/schema.sql`
 - GitHub Actions workflows in `.github/workflows/` — malicious-input, token-exfiltration, or privilege-escalation issues
 - The shadcn CLI `install` surface: any way the registry can serve a response that runs unexpected code on a developer's machine
 
