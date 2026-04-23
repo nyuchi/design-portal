@@ -35,12 +35,16 @@ comment on table public.architecture_frontend_axes is
 
 alter table public.architecture_frontend_axes enable row level security;
 
+drop policy if exists "public read architecture_frontend_axes"
+  on public.architecture_frontend_axes;
 create policy "public read architecture_frontend_axes"
   on public.architecture_frontend_axes
   for select
   to anon, authenticated
   using (true);
 
+drop trigger if exists architecture_frontend_axes_updated_at
+  on public.architecture_frontend_axes;
 create trigger architecture_frontend_axes_updated_at
   before update on public.architecture_frontend_axes
   for each row execute function public.update_updated_at();
@@ -66,12 +70,16 @@ comment on table public.architecture_frontend_layers is
 
 alter table public.architecture_frontend_layers enable row level security;
 
+drop policy if exists "public read architecture_frontend_layers"
+  on public.architecture_frontend_layers;
 create policy "public read architecture_frontend_layers"
   on public.architecture_frontend_layers
   for select
   to anon, authenticated
   using (true);
 
+drop trigger if exists architecture_frontend_layers_updated_at
+  on public.architecture_frontend_layers;
 create trigger architecture_frontend_layers_updated_at
   before update on public.architecture_frontend_layers
   for each row execute function public.update_updated_at();

@@ -43,16 +43,19 @@ comment on table public.ubuntu_pillars is
 
 alter table public.ubuntu_pillars enable row level security;
 
+drop policy if exists "public read ubuntu_pillars" on public.ubuntu_pillars;
 create policy "public read ubuntu_pillars"
   on public.ubuntu_pillars for select
   to anon, authenticated
   using (true);
 
+drop policy if exists "authenticated write ubuntu_pillars" on public.ubuntu_pillars;
 create policy "authenticated write ubuntu_pillars"
   on public.ubuntu_pillars for all
   to authenticated
   using (true) with check (true);
 
+drop trigger if exists ubuntu_pillars_updated_at on public.ubuntu_pillars;
 create trigger ubuntu_pillars_updated_at
   before update on public.ubuntu_pillars
   for each row execute function public.update_updated_at();
@@ -76,16 +79,19 @@ comment on table public.ubuntu_principles is
 
 alter table public.ubuntu_principles enable row level security;
 
+drop policy if exists "public read ubuntu_principles" on public.ubuntu_principles;
 create policy "public read ubuntu_principles"
   on public.ubuntu_principles for select
   to anon, authenticated
   using (true);
 
+drop policy if exists "authenticated write ubuntu_principles" on public.ubuntu_principles;
 create policy "authenticated write ubuntu_principles"
   on public.ubuntu_principles for all
   to authenticated
   using (true) with check (true);
 
+drop trigger if exists ubuntu_principles_updated_at on public.ubuntu_principles;
 create trigger ubuntu_principles_updated_at
   before update on public.ubuntu_principles
   for each row execute function public.update_updated_at();
