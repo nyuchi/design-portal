@@ -66,7 +66,7 @@ design-portal (this repo)
 
 | Layer                | Technology                                     | Version                                    |
 | -------------------- | ---------------------------------------------- | ------------------------------------------ |
-| Framework            | Next.js (App Router) + Nextra MDX docs         | 16.2.4                                     |
+| Framework            | Next.js (App Router) + `@next/mdx`             | 16.2.4                                     |
 | Language             | TypeScript (strict mode)                       | 6.0.3                                      |
 | Package Manager      | pnpm                                           | 10.33.0                                    |
 | Styling              | Tailwind CSS + CSS custom properties           | 4.2.4                                      |
@@ -135,8 +135,7 @@ design-portal/
 │       ├── registry-route.test.ts    # /api/v1/ui registry integrity
 │       └── v1/
 │           └── architecture-routes.test.ts  # v1 route file existence
-├── app/                              # Next.js App Router (Nextra MDX-enabled)
-│   ├── _meta.ts                      # Nextra navigation metadata
+├── app/                              # Next.js App Router (@next/mdx for .mdx routes)
 │   ├── globals.css                   # Theme tokens + Tailwind imports (token SOURCE OF TRUTH)
 │   ├── layout.tsx                    # Root layout (fonts, ThemeProvider)
 │   ├── page.mdx                      # Landing page
@@ -166,11 +165,11 @@ design-portal/
 ├── components/
 │   ├── docs/                         # DB-driven docs renderers (DEPRECATED — see §15.18)
 │   ├── landing/                      # Portal-specific compositions over registry components
-│   │                                 #   (header.tsx configures NyuchiHeader, footer.tsx
-│   │                                 #   composes primitives + portal chrome; hero, install-
-│   │                                 #   steps, ai-native, build-with, explore, resilient-
-│   │                                 #   by-design, architecture-canvas / explorer)
+│   │                                 #   (header, footer, dashboard-sidebar, breadcrumbs, toc,
+│   │                                 #   hero, install-steps, ai-native, build-with, explore,
+│   │                                 #   resilient-by-design, architecture-canvas / explorer)
 │   ├── layout/                       # mineral-strip.tsx, nyuchi-logo.tsx
+│   ├── mdx/                          # MDX-author-facing components (Callout, ...)
 │   ├── mukoko/                       # Vendored registry:ui brand components
 │   │                                 #   (mukoko-header, mukoko-footer, mukoko-theme-provider,
 │   │                                 #   mukoko-skeleton-set, mukoko-error-set,
@@ -195,6 +194,7 @@ design-portal/
 │   ├── observability.ts              # Structured logging with [mukoko] prefix
 │   ├── metrics.ts                    # MCP/API usage tracking
 │   ├── mcp-server.ts                 # MCP server factory (served at /mcp)
+│   ├── nav.ts                        # Shared nav data for header + sidebar (curated, not auto-gen)
 │   ├── harness/                      # Vendored: NyuchiHarness + useNyuchiHarness hook
 │   │                                 #   (observability + motion + a11y + health wiring)
 │   ├── resilience/                   # Vendored: section error boundary + retry fetch + fallback
