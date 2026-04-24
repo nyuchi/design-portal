@@ -3,6 +3,10 @@
     "nyuchi-design-portal": {
       "type": "url",
       "url": "https://design.nyuchi.com/mcp"
+    },
+    "supabase": {
+      "type": "url",
+      "url": "https://mcp.supabase.com/mcp"
     }
   }
 }
