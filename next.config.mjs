@@ -1,12 +1,37 @@
-import nextra from "nextra"
+import createMDX from "@next/mdx"
+import rehypeSlug from "rehype-slug"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import rehypePrettyCode from "rehype-pretty-code"
 
-const withNextra = nextra({
-  // Search indexing enabled by default
-  // Syntax highlighting via Shiki at build time
+// MDX compilation (replaces Nextra). All `.mdx` files under `app/` are
+// compiled by @next/mdx and routed through Next.js's file-based router.
+// Rehype plugins add:
+//   - `rehype-slug`             — generate heading IDs from text content
+//   - `rehype-autolink-headings` — add anchor links next to headings (# style)
+//   - `rehype-pretty-code`      — syntax highlighting via Shiki
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+  options: {
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        { behavior: "append", properties: { className: ["heading-anchor"] } },
+      ],
+      [
+        rehypePrettyCode,
+        {
+          theme: { light: "github-light", dark: "github-dark-dimmed" },
+          keepBackground: false,
+        },
+      ],
+    ],
+  },
 })
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  pageExtensions: ["ts", "tsx", "md", "mdx"],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -101,4 +126,4 @@ const nextConfig = {
   },
 }
 
-export default withNextra(nextConfig)
+export default withMDX(nextConfig)
