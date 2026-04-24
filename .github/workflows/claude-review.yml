@@ -3,12 +3,30 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    # Skip reviews entirely for PRs that only touch generated / lockfile / index
+    # artefacts. Review tokens are budget — don't spend them parsing a ~500 KB
+    # pagefind index or a pnpm-lock refresh. If a PR mixes these paths with
+    # reviewable code, the workflow still fires normally; this filter only
+    # catches PRs whose diff is *exclusively* ignored paths.
+    paths-ignore:
+      - "registry.json"
+      - "pnpm-lock.yaml"
+      - "public/_pagefind/**"
   issue_comment:
     types: [created]
   pull_request_review_comment:
     types: [created]
   pull_request_review:
     types: [submitted]
+
+# One in-flight review per PR. A new commit on the same PR cancels the
+# previous review run, so a burst of three fixups in 90 seconds costs one
+# review, not three. Falls back to `issue.number` for comment/review events
+# (same PR number, different event payload shape) and to `github.ref` as a
+# last resort for any non-PR trigger that gets added in the future.
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   claude-review:
