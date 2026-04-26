@@ -34,8 +34,6 @@ import {
   getChangelogEntries,
   getChangelogByVersion,
   getComponentVersions,
-  getDocumentationPage,
-  getAllDocumentationPages,
   getArchitectureFrontendAxes,
   getArchitectureFrontendLayers,
   getUbuntuPillars,
@@ -1179,62 +1177,6 @@ export { ${pascalName}, ${camelVariants}Variants }
           isError: true,
         })
         return toolError(`Failed to get versions for "${name}"`, err)
-      }
-    }
-  )
-
-  server.tool(
-    "get_documentation_page",
-    "Get a single documentation page by slug (or list all pages if no slug is given). Reads from the `documentation_pages` table.",
-    {
-      slug: z
-        .string()
-        .optional()
-        .describe(
-          "Page slug (e.g. '3d-architecture', 'semantic-tokens'). Omit to list all published pages."
-        ),
-    },
-    async ({ slug }) => {
-      const start = Date.now()
-      try {
-        if (!slug) {
-          const pages = await getAllDocumentationPages()
-          const summary = pages.map((p) => ({
-            slug: p.slug,
-            title: p.title,
-            category: p.category,
-            description: p.description,
-          }))
-          trackMcpTool({ toolName: "get_documentation_page", durationMs: Date.now() - start })
-          return {
-            content: [{ type: "text" as const, text: JSON.stringify(summary, null, 2) }],
-          }
-        }
-
-        const page = await getDocumentationPage(slug)
-        if (!page) {
-          trackMcpTool({
-            toolName: "get_documentation_page",
-            durationMs: Date.now() - start,
-            isError: true,
-          })
-          return {
-            content: [{ type: "text" as const, text: `Documentation page "${slug}" not found` }],
-            isError: true,
-          }
-        }
-
-        trackMcpTool({ toolName: "get_documentation_page", durationMs: Date.now() - start })
-        return {
-          content: [{ type: "text" as const, text: JSON.stringify(page, null, 2) }],
-        }
-      } catch (err) {
-        trackMcpTool({
-          toolName: "get_documentation_page",
-          durationMs: Date.now() - start,
-          isError: true,
-        })
-        return toolError("Failed to fetch documentation page", err)
       }
     }
   )
