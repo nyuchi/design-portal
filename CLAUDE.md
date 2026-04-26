@@ -14,7 +14,7 @@
 npx shadcn@latest add https://design.nyuchi.com/api/v1/ui/<component>
 ```
 
-**Version:** 4.0.26
+**Version:** 4.0.38
 
 **Live at:** design.nyuchi.com
 
@@ -219,7 +219,7 @@ design-portal/
 ├── vitest.config.ts, vitest.setup.ts
 ├── components.json                   # shadcn CLI configuration
 ├── next.config.mjs, tsconfig.json, postcss.config.mjs, eslint.config.mjs, .prettierrc
-└── package.json                      # v4.0.26
+└── package.json                      # v4.0.38
 ```
 
 > **Note on `registry.json`:** post-v4.0.26 the authoritative registry lives in the
@@ -242,7 +242,7 @@ design-portal/
 | `component_docs`      | Use cases, variants, a11y notes (per component)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `component_versions`  | Per-component version history                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `documentation_pages` | **HISTORICAL — content migrated to repo MDX, renderers + API removed.** All 10 published rows shipped as repo MDX under `/docs/*`, `/architecture/*`, `/brand`, and `/foundations/tokens`. The DB-driven renderers (`components/docs/db-doc-page.tsx`, `db-doc-index.tsx`) and the dynamic `[slug]` route are deleted; `/api/v1/docs/*` returns HTTP 410 with a `migrated_to` map; the `get_documentation_page` MCP tool is removed. The table remains in Supabase as the historical source-of-record. Do not add new rows; author new docs as MDX. See §15.18. |
-| `changelog`           | Releases (currently 4.0.0 → 4.0.26)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `changelog`           | Releases (currently 4.0.0 → 4.0.38)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `ai_instructions`     | System prompts per target (mcp-server, claude, copilot)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `fundi_issues`        | Self-healing issue tracking                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `brand_*`             | Minerals, semantic colors, typography, spacing, ecosystem brands                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -682,7 +682,7 @@ Configured in `.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "design-portal": {
+    "nyuchi-design": {
       "type": "url",
       "url": "https://design.nyuchi.com/mcp"
     }
@@ -902,7 +902,7 @@ The two conventions are inconsistent at the org level (history, not design), but
 
 ### Versioning
 
-- **Current version:** 4.0.26 (must match in `package.json`, `lib/mcp-server.ts`, the `changelog` table in Supabase, and `components/landing/footer.tsx`)
+- **Current version:** 4.0.38 (must match in `package.json`, `lib/mcp-server.ts`, the `changelog` table in Supabase, `components/landing/footer.tsx`, `components/landing/dashboard-sidebar.tsx`, `app/layout.tsx` (`softwareVersion`), `README.md`, and CLAUDE.md §1)
 - **Scheme:** `4.0.x` is the internal pre-1.0-public iteration; `4.1.0` is reserved for the first community-contributed release
 - **Release process:**
   1. Update version in `package.json`

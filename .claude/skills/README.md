@@ -53,7 +53,7 @@ For the richest experience, also wire up the live MCP server. Add to your Claude
 ```json
 {
   "mcpServers": {
-    "nyuchi-design-portal": {
+    "nyuchi-design": {
       "type": "url",
       "url": "https://design.nyuchi.com/mcp"
     }

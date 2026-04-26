@@ -117,8 +117,8 @@ export async function createMukokoMcpServer(): Promise<McpServer> {
   const instructions = await loadSystemPrompt()
   const server = new McpServer(
     {
-      name: "design-portal",
-      version: "4.0.26",
+      name: "nyuchi-design",
+      version: "4.0.38",
     },
     instructions ? { instructions } : undefined
   )
@@ -1121,7 +1121,7 @@ export { ${pascalName}, ${camelVariants}Variants }
       version: z
         .string()
         .optional()
-        .describe("Specific release version (e.g. '4.0.26'). Omit to get the full history."),
+        .describe("Specific release version (e.g. '4.0.38'). Omit to get the full history."),
     },
     async ({ version }) => {
       const start = Date.now()

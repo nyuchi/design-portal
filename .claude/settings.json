@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "nyuchi-design-portal": {
+    "nyuchi-design": {
       "type": "url",
       "url": "https://design.nyuchi.com/mcp"
     },
