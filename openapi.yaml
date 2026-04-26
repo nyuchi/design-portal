@@ -432,13 +432,20 @@ paths:
 
   /docs:
     get:
-      summary: List documentation pages
-      description: Returns all rows from `documentation_pages`.
+      summary: "GONE — long-form documentation moved into the repo as MDX"
+      description: |
+        Always returns HTTP 410 Gone.
+
+        Long-form documentation now lives in the repo as MDX (CLAUDE.md §15.18).
+        The `documentation_pages` Supabase table is HISTORICAL — content was
+        migrated in PR #57. The response body carries a `migrated_to` map that
+        lists the live URL for each former slug.
       operationId: listDocs
+      deprecated: true
       tags: [Content]
       responses:
-        "200":
-          description: Documentation page index
+        "410":
+          description: Gone — see `migrated_to` for live URLs.
           headers:
             Cache-Control:
               $ref: "#/components/headers/CachePublic"
@@ -449,17 +456,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/DocPageSummary"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
+                  error: { type: string, example: "Gone" }
+                  message: { type: string }
+                  migrated_to:
+                    type: object
+                    additionalProperties: { type: string, format: uri }
 
   /docs/{slug}:
     get:
-      summary: Get a documentation page by slug
+      summary: "GONE — see /docs for the migration map"
+      description: |
+        Always returns HTTP 410 Gone. See `GET /api/v1/docs` for the
+        per-slug → URL migration map.
       operationId: getDoc
+      deprecated: true
       tags: [Content]
       parameters:
         - name: slug
@@ -467,16 +477,16 @@ paths:
           required: true
           schema: { type: string }
       responses:
-        "200":
-          description: Documentation page
+        "410":
+          description: Gone — see /docs for the migration map.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DocPage"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
+                type: object
+                properties:
+                  error: { type: string, example: "Gone" }
+                  message: { type: string }
+                  slug: { type: string }
 
   /changelog:
     get:
