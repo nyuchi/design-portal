@@ -14,7 +14,7 @@ Follow this workflow whenever you are creating a new component in the Nyuchi Des
 
 Use the Layer Decision Guide:
 
-- L1 Tokens — CSS value, spacing, colour, motion, radius (goes in a brand\_\* table, not components)
+- L1 Tokens — CSS value, spacing, colour, motion, radius (goes in a brand_* table, not components)
 - L2 Primitive — generic UI (button, card, input, dialog, toolbar, bento-grid)
 - L3 Brand — Nyuchi-branded composition with mineral palette and harness integration
 - L4 Safety — conditional-rendering gate (permission, geo, rate limit)

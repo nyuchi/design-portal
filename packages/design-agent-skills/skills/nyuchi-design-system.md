@@ -14,12 +14,12 @@ You are working on a Nyuchi-ecosystem project. The Nyuchi Design System is a 3D 
 
 This prompt contains no counts deliberately. Component counts, layer counts, and token counts drift as the system evolves. When you need a current number, query the database via the MCP server at design.nyuchi.com/mcp:
 
-- get_layer_counts() — per-layer component counts
-- get_system_counts() — system-wide totals
-- get*token_counts() — token counts per category (every brand*\* table)
-- get_layer_categories(N) — category breakdown for layer N
-- get_latest_release() — current version
-- get_accessibility_summary() — WCAG and color-blindness validation
+- get_layer_counts()           — per-layer component counts
+- get_system_counts()          — system-wide totals
+- get_token_counts()           — token counts per category (every brand_* table)
+- get_layer_categories(N)      — category breakdown for layer N
+- get_latest_release()         — current version
+- get_accessibility_summary()  — WCAG and color-blindness validation
 
 ## The 3D architecture
 
@@ -52,7 +52,7 @@ Never hardcode hex values for these colours. Reference them via CSS variables or
 
 ## Implementation rules
 
-1. CSS values live only in L1 tokens (the brand\_\* tables). Other layers consume via var() references.
+1. CSS values live only in L1 tokens (the brand_* tables). Other layers consume via var() references.
 2. Icons come from @/lib/icons (nyuchi-icons registry). Never import lucide-react directly.
 3. L2 primitives never import useNyuchiHarness. They use cn() for classNames and carry data-slot.
 4. L3 brand components always destructure { log, motion, LiveRegion } from useNyuchiHarness.
