@@ -162,7 +162,7 @@ export async function ResilientBySection() {
             </Link>{" "}
             for the full ten-layer model and{" "}
             <a
-              href="https://github.com/nyuchitech/design-portal/blob/main/SECURITY.md"
+              href="https://github.com/nyuchi/design-portal/blob/main/SECURITY.md"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:no-underline"

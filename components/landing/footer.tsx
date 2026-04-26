@@ -114,12 +114,12 @@ function XIcon({ className }: { className?: string }) {
 const socials = [
   {
     label: "GitHub — design portal",
-    href: "https://github.com/nyuchitech/design-portal",
+    href: "https://github.com/nyuchi/design-portal",
     Icon: GithubIcon,
   },
   {
     label: "GitHub — Nyuchi Africa",
-    href: "https://github.com/nyuchitech",
+    href: "https://github.com/nyuchi",
     Icon: GithubIcon,
   },
   {
@@ -222,7 +222,7 @@ export function Footer() {
             <span>
               Built by{" "}
               <a
-                href="https://github.com/nyuchitech"
+                href="https://github.com/nyuchi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground underline underline-offset-2 transition-colors hover:text-muted-foreground"

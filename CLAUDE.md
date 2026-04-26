@@ -997,6 +997,20 @@ When working on this codebase as an AI assistant:
 21. **Buttons are always pill-shaped (`rounded-full`)** across the entire ecosystem.
 22. **Security findings are never deferred.** Any vulnerability surfaced during a `/security-review`, a manual audit, a CodeQL alert, a Dependabot advisory, or `pnpm audit` must be fixed inside the current PR — even if the original PR scope is "docs only" or "feature X". Do not file a follow-up issue and merge the unfixed code. The only acceptable exception is when the fix concretely requires infrastructure that isn't available on the PR's branch (e.g. a Supabase migration the developer must run); in that case, document the gap in `SECURITY.md`, open a tracking issue, AND still ship every code-level mitigation that doesn't require the missing infrastructure. This rule applies even when the finding is downgraded to "lack of hardening" during false-positive filtering — if a reviewer flagged it, the patch goes in this PR.
 
+23. **No known bugs are ever deferred to a follow-up PR.** This is the canonical design system for the bundu ecosystem — every consumer app (mukoko's 17 mini-apps, nyuchi's 7 enterprise products, sister brands) inherits whatever ships from `main`. Deferring a known bug to "next PR" exposes every downstream consumer to risk we already know about. That is unacceptable on critical infrastructure.
+
+    **A known bug means:** any verified-broken behaviour, any documented contract the code does not honour (e.g. a URL pattern documented in MDX that returns 404, a type/interface name promised in doctrine that doesn't exist), any dependency-version drift that breaks links/state in production, any runtime error path that has been reproduced. If it has been seen and confirmed, it is not deferred.
+
+    **In contrast, the following are NOT bugs and can ship as separate PRs:**
+    - Unbuilt features documented as `(planned)` (a doc that explicitly says "not yet wired" is honest, not a bug)
+    - Quality work without a runtime symptom (missing tests on portal-internal components covered by manual sweep, undeclared `revalidate` defaults that Next.js handles silently, redundant directives that don't break anything)
+    - Enhancements to surfaces that already function (e.g. consuming a new live-data source on a page that already renders)
+    - Parallel-track work explicitly carved out by another doctrine section (e.g. §8.6 CLI publishing)
+
+    **The audit gate before merge.** Every PR runs through (1) `/security-review`, (2) a gap analysis against this CLAUDE.md, and (3) a sweep of open GitHub issues. Anything matching the bug definition above lands in the same PR — re-scope rather than defer. Anything that is genuinely feature/enhancement gets a tracking issue and a one-line note in the PR body explaining why it is not a bug.
+
+    **No exceptions for "PR scope".** A PR titled "drop Nextra" still fixes a 22-link `nyuchitech → nyuchi` rename if that surfaces during the audit, because the linked URLs 404 in production. The doctrine of one-PR-many-commits (§14) exists precisely so we can re-scope without splitting work across PRs that ship serially over weeks.
+
 ### Open work to be aware of
 
 The repo is mid-migration to a Supabase-first model. Several issues track outstanding cleanup — see #25 (remove redundant files), #26 (Portal UI off `registry.json`), #27 (REST API expansion), #28 (MCP server fixes), #29 (DB-driven docs), #30 (this CLAUDE.md update), and #31 (dependabot deployment errors). When in doubt about whether something is canonical, prefer the Supabase row over any file in the repo.
