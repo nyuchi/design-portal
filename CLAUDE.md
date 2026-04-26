@@ -856,7 +856,7 @@ Three workflows in `.github/workflows/`:
 - Uses `anthropics/claude-code-action@v1` preceded by an explicit `actions/checkout@v6` step with `fetch-depth: 0` (the action itself does not check out the repo — it expects a populated `.git` directory so it can `git fetch origin main` to build the review diff)
 - Reviews for: code quality, design system adherence, accessibility (APCA 3.0 AAA, 56px default / 48px minimum touch targets), security, registry compatibility
 - Permissions: `contents: write`, `pull-requests: write`, `issues: write`, `id-token: write`, `actions: read`
-- Secret required: `ANTHROPIC_API_KEY` (standard Anthropic API key for GitHub Actions. `CLAUDE_CODE_OAUTH_TOKEN` is the desktop-IDE credential and is not used here.)
+- Secret required: `CLAUDE_CODE_OAUTH_TOKEN` (generated via `claude setup-token`). Routes review runs through the Claude Code subscription quota instead of API-key billing — bypasses the org-level TPM cap on the API path. Trade-off: shares the personal 5-hour rolling subscription bucket with interactive Claude Code use, so heavy CI days compete with IDE work.
 
 **`release.yml`** — Runs on version tags (`v*`):
 
