@@ -1,14 +1,23 @@
 /**
  * sync-skills — pulls every skill from the Supabase `skills` table and
- * writes the body_mdx into packages/design-agent-skills/skills/<name>.md.
+ * writes the body_mdx into BOTH:
+ *
+ *   packages/design-agent-skills/skills/<name>.md   (npm package snapshot)
+ *   .claude/skills/<name>.md                        (portal dogfood — Claude
+ *                                                    Code reads from here
+ *                                                    when running in this repo)
  *
  * The Supabase `skills` table is the SINGLE source of truth for skill
- * content. The .md files in packages/design-agent-skills/skills/ are a
- * published snapshot, refreshed on every package version bump.
+ * content (CLAUDE.md §15.24). Both file locations are published snapshots,
+ * refreshed on every `pnpm skills:sync` run. The portal dogfoods its own
+ * package — both copies must stay byte-identical to the DB row, otherwise
+ * AI assistants in the portal repo (reading .claude/skills/) and
+ * consumers (reading the npm package) would see different content for
+ * the same skill name.
  *
  * Run before `pnpm publish --filter @nyuchi/design-agent-skills`:
  *
- *   pnpm skills:sync       (pulls live + rewrites local files)
+ *   pnpm skills:sync       (pulls live + rewrites both file locations)
  *   pnpm skills:verify     (--check mode; non-zero exit if drift found)
  *
  * Required env (read from .env.local or process.env):
@@ -25,8 +34,15 @@ import { join, resolve } from "node:path"
 import { createHash } from "node:crypto"
 
 const SKILLS_PACKAGE_DIR = resolve(import.meta.dirname, "../packages/design-agent-skills")
-const SKILLS_DIR = join(SKILLS_PACKAGE_DIR, "skills")
 const MANIFEST_PATH = join(SKILLS_PACKAGE_DIR, "skills.json")
+
+// Two write targets — both must stay in sync with Supabase. The package
+// dir feeds `npx skills add @nyuchi/design-agent-skills` and the npm
+// publish flow; the portal dir feeds Claude Code running in this repo.
+const SKILLS_TARGETS = [
+  { label: "package", dir: join(SKILLS_PACKAGE_DIR, "skills") },
+  { label: "portal", dir: resolve(import.meta.dirname, "../.claude/skills") },
+] as const
 
 interface SkillRow {
   name: string
@@ -102,25 +118,27 @@ async function main() {
 
   let drift = 0
   for (const skill of skills) {
-    const path = join(SKILLS_DIR, `${skill.name}.md`)
     const dbHash = md5(skill.body_mdx)
-    const localHash = existsSync(path) ? md5(readFileSync(path, "utf-8")) : null
+    for (const target of SKILLS_TARGETS) {
+      const path = join(target.dir, `${skill.name}.md`)
+      const localHash = existsSync(path) ? md5(readFileSync(path, "utf-8")) : null
 
-    if (localHash === dbHash) {
-      console.log(`  ok      ${skill.name}.md`)
-      continue
-    }
+      if (localHash === dbHash) {
+        console.log(`  ok      ${target.label}/${skill.name}.md`)
+        continue
+      }
 
-    drift += 1
-    if (checkOnly) {
-      console.log(
-        `  DRIFT   ${skill.name}.md (db=${dbHash.slice(0, 8)} local=${localHash?.slice(0, 8) ?? "missing"})`
-      )
-    } else {
-      writeFileSync(path, skill.body_mdx)
-      console.log(
-        `  write   ${skill.name}.md (was ${localHash?.slice(0, 8) ?? "missing"} → ${dbHash.slice(0, 8)})`
-      )
+      drift += 1
+      if (checkOnly) {
+        console.log(
+          `  DRIFT   ${target.label}/${skill.name}.md (db=${dbHash.slice(0, 8)} local=${localHash?.slice(0, 8) ?? "missing"})`
+        )
+      } else {
+        writeFileSync(path, skill.body_mdx)
+        console.log(
+          `  write   ${target.label}/${skill.name}.md (was ${localHash?.slice(0, 8) ?? "missing"} → ${dbHash.slice(0, 8)})`
+        )
+      }
     }
   }
 
