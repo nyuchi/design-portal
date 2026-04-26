@@ -236,17 +236,17 @@ design-portal/
 
 **Single source of truth: the Supabase `components` table** — the stable registry across 10 architecture layers (live count: `GET /api/v1/stats` → `stable`), with metadata, dependencies, source code, docs, and version history split across:
 
-| Table                 | Purpose                                                                                                                |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `components`          | Name, type, description, deps, files, source_code, architecture_layer, category, status                                |
-| `component_docs`      | Use cases, variants, a11y notes (per component)                                                                        |
-| `component_versions`  | Per-component version history                                                                                          |
-| `documentation_pages` | **DEPRECATED — see §15.18.** Long-form MDX-equivalent docs (10 pages). Rows will be migrated out to repo `.mdx` files. |
-| `changelog`           | Releases (currently 4.0.0 → 4.0.26)                                                                                    |
-| `ai_instructions`     | System prompts per target (mcp-server, claude, copilot)                                                                |
-| `fundi_issues`        | Self-healing issue tracking                                                                                            |
-| `brand_*`             | Minerals, semantic colors, typography, spacing, ecosystem brands                                                       |
-| `architecture_*`      | Principles, data layer, pipeline, sovereignty assessments                                                              |
+| Table                 | Purpose                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `components`          | Name, type, description, deps, files, source_code, architecture_layer, category, status                                                                                                                                                                                                                                  |
+| `component_docs`      | Use cases, variants, a11y notes (per component)                                                                                                                                                                                                                                                                          |
+| `component_versions`  | Per-component version history                                                                                                                                                                                                                                                                                            |
+| `documentation_pages` | **HISTORICAL — content migrated to repo MDX in this PR.** All 10 published rows exported to `app/docs/*/page.mdx`. The table remains in Supabase as the historical source-of-record; the API endpoints + DB-driven renderers will be removed in a follow-up PR. Do not add new rows; author new docs as MDX. See §15.18. |
+| `changelog`           | Releases (currently 4.0.0 → 4.0.26)                                                                                                                                                                                                                                                                                      |
+| `ai_instructions`     | System prompts per target (mcp-server, claude, copilot)                                                                                                                                                                                                                                                                  |
+| `fundi_issues`        | Self-healing issue tracking                                                                                                                                                                                                                                                                                              |
+| `brand_*`             | Minerals, semantic colors, typography, spacing, ecosystem brands                                                                                                                                                                                                                                                         |
+| `architecture_*`      | Principles, data layer, pipeline, sovereignty assessments                                                                                                                                                                                                                                                                |
 
 API responses follow the shadcn registry schema at `https://ui.shadcn.com/schema/registry.json`.
 
