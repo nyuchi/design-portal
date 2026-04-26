@@ -6,7 +6,7 @@
 [![Release](https://github.com/nyuchi/design-portal/actions/workflows/release.yml/badge.svg)](https://github.com/nyuchi/design-portal/actions/workflows/release.yml)
 [![CodeQL](https://github.com/nyuchi/design-portal/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/nyuchi/design-portal/security/code-scanning)
 
-**Version:** 4.0.38 | **Live:** [design.nyuchi.com](https://design.nyuchi.com) | **Docs:** [design.nyuchi.com/docs](https://design.nyuchi.com/docs) | **Observability:** [design.nyuchi.com/observability](https://design.nyuchi.com/observability)
+**Version:** 4.0.39 | **Live:** [design.nyuchi.com](https://design.nyuchi.com) | **Docs:** [design.nyuchi.com/docs](https://design.nyuchi.com/docs) | **Observability:** [design.nyuchi.com/observability](https://design.nyuchi.com/observability)
 
 ---
 

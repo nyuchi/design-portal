@@ -619,7 +619,7 @@ paths:
         - name: version
           in: path
           required: true
-          schema: { type: string, example: "4.0.38" }
+          schema: { type: string, example: "4.0.39" }
       responses:
         "200":
           description: Release
@@ -1197,7 +1197,7 @@ components:
           const: "Brand"
         version:
           type: string
-          example: "4.0.38"
+          example: "4.0.39"
         name:
           type: string
           example: "Nyuchi Brand System"
@@ -1979,7 +1979,7 @@ components:
       type: object
       required: [version, title, createdAt]
       properties:
-        version: { type: string, example: "4.0.38" }
+        version: { type: string, example: "4.0.39" }
         title: { type: string }
         description: { type: string }
         layersAffected:
