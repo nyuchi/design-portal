@@ -71,8 +71,8 @@ export function Toc({ className }: { className?: string }) {
           key={entry.id}
           href={`#${entry.id}`}
           className={cn(
-            "block border-l py-0.5 pl-3 transition-colors",
-            entry.level === 3 && "pl-6",
+            "block border-s py-0.5 ps-3 transition-colors",
+            entry.level === 3 && "ps-6",
             activeId === entry.id
               ? "border-foreground font-medium text-foreground"
               : "border-border text-muted-foreground hover:text-foreground"

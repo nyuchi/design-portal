@@ -40,13 +40,13 @@ export function Breadcrumbs({ className }: { className?: string }) {
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        "flex min-h-[24px] flex-wrap items-center gap-1 text-xs text-muted-foreground",
+        "flex min-h-[48px] flex-wrap items-center gap-1 text-xs text-muted-foreground",
         className
       )}
     >
       <Link
         href="/"
-        className="rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="inline-flex min-h-[48px] items-center rounded-sm px-1 py-2 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         Home
       </Link>
@@ -56,13 +56,16 @@ export function Breadcrumbs({ className }: { className?: string }) {
           <span key={crumb.href} className="flex items-center gap-1">
             <ChevronRight className="size-3 opacity-50" aria-hidden="true" />
             {isLast ? (
-              <span className="font-medium text-foreground" aria-current="page">
+              <span
+                className="inline-flex min-h-[48px] items-center px-1 py-2 font-medium text-foreground"
+                aria-current="page"
+              >
                 {crumb.label}
               </span>
             ) : (
               <Link
                 href={crumb.href}
-                className="rounded-sm transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="inline-flex min-h-[48px] items-center rounded-sm px-1 py-2 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 {crumb.label}
               </Link>
